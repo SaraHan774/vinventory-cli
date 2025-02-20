@@ -1,49 +1,75 @@
 package com.august.service
 
+import com.august.domain.model.HistoryType
 import com.august.domain.model.Wine
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 
-class FakeInventoryRepository : InventoryRepository {
+class InventoryRepositoryImpl(
+    private val inventoryHistoryRepository: InventoryHistoryRepository = InventoryHistoryRepositoryImpl,
+) : InventoryRepository {
     private val wines = mutableListOf<Wine>() // TODO : 구체적인 Wine 모델에 얽혀있는 CRUD 클래스. 추상화 한다면 다양한 모델에 대해 재사용 가능하지 않을까?
     private val lock = ReentrantLock() // 동시성 제어를 위한 락 추가
 
-    override fun register(wine: Wine): Boolean {
-        if (wines.any { it.id == wine.id }) { // 중복 방지
-            return false
+    override fun register(wine: Wine, modifiedBy: String): Boolean {
+        return withTryLock {
+            if (wines.any { it.id == wine.id }) { // 중복 방지
+                throw IllegalStateException("Register failed : duplicate wine already exists.")
+            }
+            inventoryHistoryRepository.logChange(
+                wineId = wine.id,
+                historyType = HistoryType.StockIn,
+                quantityChanged = wine.quantity,
+                modifiedBy = modifiedBy
+            )
+            return@withTryLock wines.add(wine)
         }
-        return wines.add(wine)
     }
 
-    override fun delete(id: String): Boolean {
-        if (findWineById(id) == null) throw WineNotFoundException("Cannot find wine ID : $id")
-        return wines.removeIf { wine -> wine.id == id }
+    override fun delete(id: String, modifiedBy: String): Boolean {
+        return withTryLock {
+            val wine = findWineById(id) ?: throw WineNotFoundException("Cannot find wine ID : $id")
+            inventoryHistoryRepository.logChange(
+                wineId = id,
+                historyType = HistoryType.StockOut,
+                quantityChanged = -wine.quantity,
+                modifiedBy = modifiedBy
+            )
+            return@withTryLock wines.remove(wine)
+        }
     }
 
-    override fun store(id: String, quantity: Int): Boolean {
-        if (lock.tryLock(1, TimeUnit.SECONDS).not()) return false // Lock 울 획득하지 못하면 실패 처리
-        try {
+    override fun store(id: String, quantity: Int, modifiedBy: String): Boolean {
+        return withTryLock {
             val (wine, index) = findWineAndIndexById(id)
-            return adjustQuantity(index, wine, wine.quantity + quantity)
-        } finally {
-            lock.unlock()
+            inventoryHistoryRepository.logChange(
+                wineId = id,
+                historyType = HistoryType.StockIn,
+                quantityChanged = quantity,
+                modifiedBy = modifiedBy,
+            )
+            return@withTryLock adjustQuantity(index, wine, wine.quantity + quantity)
         }
     }
 
-    override fun retrieve(id: String, quantity: Int): Boolean {
-        if (lock.tryLock(1, TimeUnit.SECONDS).not()) return false
-        try {
+    override fun retrieve(id: String, quantity: Int, modifiedBy: String): Boolean {
+        return withTryLock {
             val (wine, index) = findWineAndIndexById(id)
             val adjustedQuantity = wine.quantity - quantity
             if (adjustedQuantity < 0) {
                 // 예외가 발생한 경우 원래 상태를 유지하는가? 출고 후 데이터가 실제로 어떻게 변화하는가?
                 throw NotEnoughStockException(stockLeft = wine.quantity)
             }
-            return adjustQuantity(index, wine, adjustedQuantity)
-        } finally {
-            lock.unlock()
+            inventoryHistoryRepository.logChange(
+                wineId = id,
+                historyType = HistoryType.StockOut,
+                quantityChanged = quantity,
+                modifiedBy = modifiedBy,
+            )
+            return@withTryLock adjustQuantity(index, wine, adjustedQuantity)
         }
     }
+
 
     override fun getAll(): List<Wine> {
         // 단순히 리스트를 반환하는 것이지만, 리스트가 변경될 때 정확한 데이터를 리턴하는지 검증할 필요가 있다.
@@ -66,6 +92,15 @@ class FakeInventoryRepository : InventoryRepository {
     private fun adjustQuantity(index: Int, wine: Wine, quantity: Int): Boolean {
         wines[index] = wine.copy(quantity = quantity)
         return true
+    }
+
+    private fun withTryLock(block: () -> Boolean): Boolean {
+        if (lock.tryLock(1, TimeUnit.SECONDS)) return false
+        return try {
+            block()
+        } finally {
+            lock.unlock()
+        }
     }
 }
 

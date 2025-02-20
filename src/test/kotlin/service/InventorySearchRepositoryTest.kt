@@ -83,7 +83,6 @@ class InventorySearchRepositoryImplTest {
     @Test
     fun `다중 필터링을 적용하면 모든 조건을 만족하는 와인만 반환되어야 한다`() {
         val result = repository.findWineByFilter(testWines, CountryCode("FR"), Vintage(Exact(2015)), Price(MinMax(300, 500)))
-        println("result = " + result)
         assertEquals(2, result.size)
         assertTrue(result.all { it.countryCode == "FR" && it.vintage == 2015 && it.price in 300..500 })
     }

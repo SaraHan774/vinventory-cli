@@ -1,20 +1,19 @@
 package com.august.service
 
 import com.august.domain.model.Wine
-import org.w3c.dom.ranges.Range
 
 interface InventoryRepository {
     // 재고 등록
-    fun register(wine: Wine): Boolean
+    fun register(wine: Wine, modifiedBy: String = ""): Boolean
 
     // 재고 삭제
-    fun delete(id: String): Boolean
+    fun delete(id: String, modifiedBy: String = ""): Boolean
 
     // 입고
-    fun store(id: String, quantity: Int): Boolean
+    fun store(id: String, quantity: Int, modifiedBy: String = ""): Boolean
 
     // 출고
-    fun retrieve(id: String, quantity: Int): Boolean
+    fun retrieve(id: String, quantity: Int, modifiedBy: String = ""): Boolean
 
     // 전체 조회
     fun getAll(): List<Wine>
