@@ -1,14 +1,11 @@
-package service
+package com.august.service
 
 import com.august.domain.model.Wine
-import com.august.service.InventoryFilterType
-import com.august.service.InventoryFilterType.*
-import com.august.service.InventoryRepository
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 
 class FakeInventoryRepository : InventoryRepository {
-    private val wines = mutableListOf<Wine>()
+    private val wines = mutableListOf<Wine>() // TODO : 구체적인 Wine 모델에 얽혀있는 CRUD 클래스. 추상화 한다면 다양한 모델에 대해 재사용 가능하지 않을까?
     private val lock = ReentrantLock() // 동시성 제어를 위한 락 추가
 
     override fun register(wine: Wine): Boolean {
@@ -47,31 +44,6 @@ class FakeInventoryRepository : InventoryRepository {
             lock.unlock()
         }
     }
-
-    override fun findWineByFilter(filterType: InventoryFilterType): List<Wine> {
-        return when (filterType) {
-            is WineryName -> {
-                wines.filter { it.wineryName == filterType.name }
-            }
-
-            is CountryCode -> {
-                wines.filter { it.countryCode == filterType.code }
-            }
-
-            is Vintage -> {
-                wines.filter { it.vintage == filterType.year }
-            }
-
-            is Price -> {
-                wines.filter { it.price < filterType.max && it.price > filterType.min }
-            }
-
-            is Quantity -> {
-                wines.filter { it.quantity == filterType.num }
-            }
-        }
-    }
-
 
     override fun getAll(): List<Wine> {
         // 단순히 리스트를 반환하는 것이지만, 리스트가 변경될 때 정확한 데이터를 리턴하는지 검증할 필요가 있다.

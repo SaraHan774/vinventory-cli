@@ -1,6 +1,9 @@
 package service
 
 import com.august.domain.model.Wine
+import com.august.service.FakeInventoryRepository
+import com.august.service.NotEnoughStockException
+import com.august.service.WineNotFoundException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
