@@ -32,7 +32,7 @@ class InventoryRepositoryTest {
     fun `이미 재고 목록에 있는 와인을 추가할 경우 추가 실패`() {
         val repository = InventoryRepositoryImpl()
         assertTrue { repository.register(wine) }
-        assertFalse { repository.register(wine) } // 2번째 등록 시 실패
+        assertThrows<IllegalStateException> { repository.register(wine) } // 2번째 등록 시 실패
     }
 
     @Test
@@ -55,8 +55,10 @@ class InventoryRepositoryTest {
     fun `와인 재고를 추가하면 추가한 수량만큼 재고가 증가함`() {
         val repository = InventoryRepositoryImpl()
         repository.register(wine)
+        println("=== ${repository.getAll()}")
         val originalQuantity = wine.quantity
         repository.store(wine.id, quantity = 4)
+        println("=== ${repository.getAll()}")
         assertEquals(repository.getAll().find { it.id == wine.id }?.quantity, originalQuantity + 4)
     }
 

@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 
 class InventoryRepositoryImpl(
-    private val inventoryHistoryRepository: InventoryHistoryRepository = InventoryHistoryRepositoryImpl,
+    private val inventoryHistoryRepository: InventoryHistoryRepository = InventoryHistoryRepositoryImpl(),
 ) : InventoryRepository {
     private val wines = mutableListOf<Wine>() // TODO : 구체적인 Wine 모델에 얽혀있는 CRUD 클래스. 추상화 한다면 다양한 모델에 대해 재사용 가능하지 않을까?
     private val lock = ReentrantLock() // 동시성 제어를 위한 락 추가
@@ -22,7 +22,7 @@ class InventoryRepositoryImpl(
                 quantityChanged = wine.quantity,
                 modifiedBy = modifiedBy
             )
-            return@withTryLock wines.add(wine)
+            wines.add(wine)
         }
     }
 
@@ -95,9 +95,9 @@ class InventoryRepositoryImpl(
     }
 
     private fun withTryLock(block: () -> Boolean): Boolean {
-        if (lock.tryLock(1, TimeUnit.SECONDS)) return false
-        return try {
-            block()
+        if (lock.tryLock(1, TimeUnit.SECONDS).not()) return false
+        try {
+            return block()
         } finally {
             lock.unlock()
         }

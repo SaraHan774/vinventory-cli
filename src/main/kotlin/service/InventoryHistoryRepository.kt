@@ -14,9 +14,13 @@ interface InventoryHistoryRepository {
     )
 
     fun getAllHistories(): List<InventoryHistory>
-    fun getHistoriesByFilter(filter: HistoryFilterType): List<InventoryHistory>
+    fun getHistoriesByFilter(vararg filterTypes: HistoryFilterType): List<InventoryHistory>
 }
 
 sealed class HistoryFilterType {
+    data class WineId(val id: String): HistoryFilterType()
+    data class Type(val type: HistoryType): HistoryFilterType()
+    data class Quantity(val quantity: Int): HistoryFilterType()
     data class ModifiedBy(val name: String) : HistoryFilterType()
+    data class Id(val id: String): HistoryFilterType()
 }
