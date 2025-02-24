@@ -1,5 +1,16 @@
 package com.august
 
 fun main() {
-    println("Hello World!")
+    while(true) {
+
+    }
+}
+
+object InputView {
+
+
+}
+
+object ResultView {
+
 }
