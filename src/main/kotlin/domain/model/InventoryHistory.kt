@@ -10,5 +10,5 @@ data class InventoryHistory(
 )
 
 enum class HistoryType {
-    StockIn, StockOut
+    STOCK_IN, STOCK_OUT
 }

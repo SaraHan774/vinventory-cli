@@ -18,7 +18,7 @@ class InventoryRepositoryImpl(
             }
             inventoryHistoryRepository.logChange(
                 wineId = wine.id,
-                historyType = HistoryType.StockIn,
+                historyType = HistoryType.STOCK_IN,
                 quantityChanged = wine.quantity,
                 modifiedBy = modifiedBy
             )
@@ -31,7 +31,7 @@ class InventoryRepositoryImpl(
             val wine = findWineById(id) ?: throw WineNotFoundException("Cannot find wine ID : $id")
             inventoryHistoryRepository.logChange(
                 wineId = id,
-                historyType = HistoryType.StockOut,
+                historyType = HistoryType.STOCK_OUT,
                 quantityChanged = -wine.quantity,
                 modifiedBy = modifiedBy
             )
@@ -44,7 +44,7 @@ class InventoryRepositoryImpl(
             val (wine, index) = findWineAndIndexById(id)
             inventoryHistoryRepository.logChange(
                 wineId = id,
-                historyType = HistoryType.StockIn,
+                historyType = HistoryType.STOCK_IN,
                 quantityChanged = quantity,
                 modifiedBy = modifiedBy,
             )
@@ -62,7 +62,7 @@ class InventoryRepositoryImpl(
             }
             inventoryHistoryRepository.logChange(
                 wineId = id,
-                historyType = HistoryType.StockOut,
+                historyType = HistoryType.STOCK_OUT,
                 quantityChanged = quantity,
                 modifiedBy = modifiedBy,
             )

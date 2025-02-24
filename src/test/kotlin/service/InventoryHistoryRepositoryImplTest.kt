@@ -1,47 +1,81 @@
-package service
-
 import com.august.domain.model.HistoryType
-import com.august.domain.model.InventoryHistory
-import com.august.domain.model.Wine
 import com.august.service.HistoryFilterType
-import com.august.service.InventoryHistoryRepository
 import com.august.service.InventoryHistoryRepositoryImpl
-import com.august.service.InventoryRepository
-import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class InventoryHistoryRepositoryImplTest {
-    private lateinit var sut: InventoryHistoryRepository
+    private lateinit var repository: InventoryHistoryRepositoryImpl
 
-    @Test
-    fun logChange() {
-        sut = InventoryHistoryRepositoryImpl()
-        sut.logChange(
-            wineId = "wine-001",
-            historyType = HistoryType.StockIn,
-            quantityChanged = 10,
-            modifiedBy = "user-123",
-            idGenerator = { "fixed-uuid-1234" }
-        )
-
-        val history = sut.getAllHistories()
-        assertEquals(1, history.size)
-        assertEquals("fixed-uuid-1234", history.first().id)
+    @BeforeEach
+    fun setup() {
+        repository = InventoryHistoryRepositoryImpl()
     }
 
     @Test
-    fun filterHistoriesTest() {
-        val filterTypes = listOf(
-            HistoryFilterType.Type(HistoryType.StockIn),
-            HistoryFilterType.Type(HistoryType.StockOut),
-            HistoryFilterType.Id("fixed-uuid-1234"),
-            HistoryFilterType.WineId("wine-001"),
-            HistoryFilterType.Quantity(10),
+    fun `logChange should add a new history entry`() {
+        repository.logChange("wine-001", HistoryType.STOCK_IN, 10, "user-123") { "uuid-001" }
+        val histories = repository.getAllHistories()
+
+        assertEquals(1, histories.size)
+        assertEquals("uuid-001", histories.first().id)
+        assertEquals("wine-001", histories.first().wineId)
+        assertEquals(HistoryType.STOCK_IN, histories.first().historyType)
+        assertEquals(10, histories.first().quantityChanged)
+        assertEquals("user-123", histories.first().modifiedBy)
+    }
+
+    @Test
+    fun `getAllHistories should return all logged histories`() {
+        repository.logChange("wine-001", HistoryType.STOCK_IN, 10, "user-123") { "uuid-001" }
+        repository.logChange("wine-002", HistoryType.STOCK_OUT, 5, "user-456") { "uuid-002" }
+
+        val histories = repository.getAllHistories()
+        assertEquals(2, histories.size)
+    }
+
+    @Test
+    fun `getHistoriesByFilter should filter by id`() {
+        repository.logChange("wine-001", HistoryType.STOCK_IN, 10, "user-123") { "uuid-001" }
+        repository.logChange("wine-002", HistoryType.STOCK_OUT, 5, "user-456") { "uuid-002" }
+
+        val result = repository.getHistoriesByFilter(HistoryFilterType.Id("uuid-001"))
+        assertEquals(1, result.size)
+        assertEquals("uuid-001", result.first().id)
+    }
+
+    @Test
+    fun `getHistoriesByFilter should filter by type`() {
+        repository.logChange("wine-001", HistoryType.STOCK_IN, 10, "user-123") { "uuid-001" }
+        repository.logChange("wine-002", HistoryType.STOCK_OUT, 5, "user-456") { "uuid-002" }
+
+        val result = repository.getHistoriesByFilter(HistoryFilterType.Type(HistoryType.STOCK_IN))
+        assertEquals(1, result.size)
+        assertEquals(HistoryType.STOCK_IN, result.first().historyType)
+    }
+
+    @Test
+    fun `getHistoriesByFilter should return intersection of multiple filters`() {
+        repository.logChange("wine-001", HistoryType.STOCK_IN, 10, "user-123") { "uuid-001" }
+        repository.logChange("wine-002", HistoryType.STOCK_OUT, 5, "user-123") { "uuid-002" }
+        repository.logChange("wine-003", HistoryType.STOCK_IN, 15, "user-789") { "uuid-003" }
+
+        val result = repository.getHistoriesByFilter(
+            HistoryFilterType.Type(HistoryType.STOCK_IN),
             HistoryFilterType.ModifiedBy("user-123")
         )
-        // TODO 테스트 작성
+
+        assertEquals(1, result.size)
+        assertEquals("uuid-001", result.first().id)
+    }
+
+    @Test
+    fun `getHistoriesByFilter should return empty list if no match`() {
+        repository.logChange("wine-001", HistoryType.STOCK_IN, 10, "user-123") { "uuid-001" }
+
+        val result = repository.getHistoriesByFilter(HistoryFilterType.Type(HistoryType.STOCK_OUT))
+        assertTrue(result.isEmpty())
     }
 }
