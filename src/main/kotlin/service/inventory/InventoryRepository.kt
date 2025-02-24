@@ -1,4 +1,4 @@
-package com.august.service
+package com.august.service.inventory
 
 import com.august.domain.model.Wine
 
@@ -17,6 +17,9 @@ interface InventoryRepository {
 
     // 전체 조회
     fun getAll(): List<Wine>
+
+    // 아이디로 조회
+    fun getById(id: String): Wine?
 }
 
 sealed class InventoryFilterType {

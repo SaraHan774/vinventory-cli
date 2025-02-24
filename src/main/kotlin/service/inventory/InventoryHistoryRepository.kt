@@ -1,4 +1,4 @@
-package com.august.service
+package com.august.service.inventory
 
 import com.august.domain.model.HistoryType
 import com.august.domain.model.InventoryHistory

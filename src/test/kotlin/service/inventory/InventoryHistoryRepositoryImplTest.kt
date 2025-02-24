@@ -1,6 +1,8 @@
+package service.inventory
+
 import com.august.domain.model.HistoryType
-import com.august.service.HistoryFilterType
-import com.august.service.InventoryHistoryRepositoryImpl
+import com.august.service.inventory.HistoryFilterType
+import com.august.service.inventory.InventoryHistoryRepositoryImpl
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals

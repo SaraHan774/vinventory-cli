@@ -1,15 +1,14 @@
-package service
+package service.inventory
 
 import com.august.domain.model.Wine
-import com.august.service.InventoryRepositoryImpl
-import com.august.service.NotEnoughStockException
-import com.august.service.WineNotFoundException
+import com.august.service.inventory.InventoryRepositoryImpl
+import com.august.service.inventory.NotEnoughStockException
+import com.august.service.inventory.WineNotFoundException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class InventoryRepositoryTest {

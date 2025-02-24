@@ -1,4 +1,4 @@
-package com.august.service
+package com.august.service.inventory
 
 import com.august.domain.model.HistoryType
 import com.august.domain.model.Wine
@@ -75,6 +75,10 @@ class InventoryRepositoryImpl(
         // 단순히 리스트를 반환하는 것이지만, 리스트가 변경될 때 정확한 데이터를 리턴하는지 검증할 필요가 있다.
         // 데이터가 추가되거나 삭제된 후 getAll이 올바른 상태를 유지하는지 확인해야 함
         return wines
+    }
+
+    override fun getById(id: String): Wine? {
+        return findWineById(id)
     }
 
     private fun findWineById(id: String): Wine? {
