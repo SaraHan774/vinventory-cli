@@ -1,4 +1,4 @@
-package com.august.service.inventory
+package com.august.repository.inventory
 
 import com.august.domain.model.Wine
 

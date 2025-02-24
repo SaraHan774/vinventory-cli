@@ -1,7 +1,7 @@
-package com.august.service.inventory
+package com.august.repository.inventory
 
 import com.august.domain.model.Wine
-import com.august.service.inventory.InventoryFilterType.*
+import com.august.repository.inventory.InventoryFilterType.*
 
 class InventorySearchRepositoryImpl : InventorySearchRepository {
     override fun findWineByFilter(
