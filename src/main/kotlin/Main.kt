@@ -5,12 +5,3 @@ fun main() {
 
     }
 }
-
-object InputView {
-
-
-}
-
-object ResultView {
-
-}
