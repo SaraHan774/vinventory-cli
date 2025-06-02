@@ -1,5 +1,6 @@
 package com.august
 
+import com.august.domain.Wine
 import com.august.service.inventory.IInventoryService
 import com.august.service.alert.ConsoleAlertService
 import com.august.service.alert.InventoryServiceErrorHandler
@@ -32,16 +33,43 @@ class Application : KoinComponent {
                                 price = event.price,
                                 quantity = event.quantity
                             )
+                            println("Wine registered successfully")
                         }
                         is ViewEvent.DeleteWine -> {
                             inventoryService.deleteWine(event.id)
+                            println("Wine deleted successfully")
                         }
                         is ViewEvent.AddWine -> {
                             inventoryService.addWine(event.id, event.quantity)
+                            println("Wine quantity updated successfully")
                         }
                         is ViewEvent.RetrieveWine -> {
                             val wine = inventoryService.retrieveWine(event.id)
                             println("Retrieved wine: $wine")
+                        }
+                        is ViewEvent.SearchWinesByName -> {
+                            val wines = inventoryService.searchWinesByName(event.query)
+                            printWines("Search results:", wines)
+                        }
+                        is ViewEvent.FilterByVintage -> {
+                            val wines = inventoryService.findWinesByVintageRange(event.startYear, event.endYear)
+                            printWines("Wines from ${event.startYear} to ${event.endYear}:", wines)
+                        }
+                        is ViewEvent.FilterByPrice -> {
+                            val wines = inventoryService.findWinesByPriceRange(event.minPrice, event.maxPrice)
+                            printWines("Wines between $${event.minPrice} and $${event.maxPrice}:", wines)
+                        }
+                        is ViewEvent.FilterByCountry -> {
+                            val wines = inventoryService.findWinesByCountry(event.countryCode)
+                            printWines("Wines from ${event.countryCode}:", wines)
+                        }
+                        is ViewEvent.ShowLowStockWines -> {
+                            val wines = inventoryService.findLowStockWines()
+                            printWines("Low stock wines:", wines)
+                        }
+                        is ViewEvent.ListAllWines -> {
+                            val wines = inventoryService.getAllWines()
+                            printWines("All wines:", wines)
                         }
                     }
                 }
@@ -53,6 +81,25 @@ class Application : KoinComponent {
                 alertService.sendAlert("An error occurred: ${e.message}")
                 errorHandler.handle(e)
             }
+        }
+    }
+
+    private fun printWines(header: String, wines: List<Wine>) {
+        println("\n$header")
+        if (wines.isEmpty()) {
+            println("No wines found")
+            return
+        }
+        wines.forEach { wine ->
+            println("""
+                ID: ${wine.id}
+                Name: ${wine.name}
+                Country: ${wine.countryCode}
+                Vintage: ${wine.vintage}
+                Price: $${wine.price}
+                Quantity: ${wine.quantity}
+                ${"-".repeat(40)}
+            """.trimIndent())
         }
     }
 }

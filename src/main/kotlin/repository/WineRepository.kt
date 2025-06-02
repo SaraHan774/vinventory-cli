@@ -26,4 +26,34 @@ class WineRepository : IWineRepository {
     override fun findAll(): List<Wine> {
         return wines.values.toList()
     }
+
+    override fun searchByName(query: String): List<Wine> {
+        return wines.values.filter { 
+            it.name.contains(query, ignoreCase = true)
+        }
+    }
+
+    override fun filterByVintageRange(startYear: Int, endYear: Int): List<Wine> {
+        return wines.values.filter {
+            it.vintage in startYear..endYear
+        }
+    }
+
+    override fun filterByPriceRange(minPrice: Double, maxPrice: Double): List<Wine> {
+        return wines.values.filter {
+            it.price in minPrice..maxPrice
+        }
+    }
+
+    override fun filterByCountry(countryCode: String): List<Wine> {
+        return wines.values.filter {
+            it.countryCode.equals(countryCode, ignoreCase = true)
+        }
+    }
+
+    override fun findLowStock(threshold: Int): List<Wine> {
+        return wines.values.filter {
+            it.quantity <= threshold
+        }
+    }
 } 

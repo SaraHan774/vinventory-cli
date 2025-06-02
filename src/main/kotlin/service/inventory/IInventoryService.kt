@@ -8,4 +8,11 @@ interface IInventoryService {
     fun addWine(id: String, quantity: Int)
     fun retrieveWine(id: String): Wine
     fun getAllWines(): List<Wine>
+    
+    // Search and filter methods
+    fun searchWinesByName(query: String): List<Wine>
+    fun findWinesByVintageRange(startYear: Int, endYear: Int): List<Wine>
+    fun findWinesByPriceRange(minPrice: Double, maxPrice: Double): List<Wine>
+    fun findWinesByCountry(countryCode: String): List<Wine>
+    fun findLowStockWines(threshold: Int = 5): List<Wine>
 } 
