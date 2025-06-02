@@ -12,12 +12,17 @@ repositories {
 
 application {
     mainClass.set("com.august.MainKt")
-    applicationDefaultJvmArgs = listOf("-Xmx512m", "-Xms256m")
 }
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
     implementation("io.insert-koin:koin-core:3.5.3")
+    
+    // Database
+    implementation("org.jetbrains.exposed:exposed-core:0.48.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.48.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.48.0")
+    implementation("org.xerial:sqlite-jdbc:3.45.1.0")
     
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
     testImplementation("io.mockk:mockk:1.13.16")
@@ -37,6 +42,10 @@ tasks.jar {
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+}
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
 }
 
 kotlin {

@@ -15,110 +15,226 @@ object InputView {
         """.trimIndent())
     }
 
-    fun selectMenu() {
-        val input = readLine()
-        if (input.isNullOrBlank()) {
-            println("Please enter a valid option")
-            return
-        }
-
-        when (input.toIntOrNull()) {
-            1 -> handleRegisterWine()
-            2 -> handleDeleteWine()
-            3 -> handleAddWine()
-            4 -> handleRetrieveWine()
-            5 -> handleSearchAndFilter()
-            6 -> System.exit(0)
+    fun selectMenu(input: String) {
+        when (input) {
+            "1" -> handleRegisterWine()
+            "2" -> handleDeleteWine()
+            "3" -> handleAddWine()
+            "4" -> handleRetrieveWine()
+            "5" -> handleSearchAndFilter()
             else -> println("Invalid option")
         }
     }
 
     private fun handleSearchAndFilter() {
-        println("""
-            Search & Filter Options:
-            1. Search by name
-            2. Filter by vintage range
-            3. Filter by price range
-            4. Filter by country
-            5. Show low stock wines
-            6. List all wines
-            7. Back to main menu
-            Choose an option:
-        """.trimIndent())
+        var validInput = false
+        while (!validInput) {
+            println("""
+                Search & Filter Options:
+                1. Search by name
+                2. Filter by vintage range
+                3. Filter by price range
+                4. Filter by country
+                5. Show low stock wines
+                6. List all wines
+                7. Back to main menu
+                Choose an option:
+            """.trimIndent())
 
-        when (readLine()?.toIntOrNull()) {
-            1 -> handleSearchByName()
-            2 -> handleFilterByVintage()
-            3 -> handleFilterByPrice()
-            4 -> handleFilterByCountry()
-            5 -> viewEvents.add(ViewEvent.ShowLowStockWines)
-            6 -> viewEvents.add(ViewEvent.ListAllWines)
-            7 -> return
-            else -> println("Invalid option")
+            when (readLine()?.trim()?.toIntOrNull()) {
+                1 -> {
+                    handleSearchByName()
+                    validInput = true
+                }
+                2 -> {
+                    handleFilterByVintage()
+                    validInput = true
+                }
+                3 -> {
+                    handleFilterByPrice()
+                    validInput = true
+                }
+                4 -> {
+                    handleFilterByCountry()
+                    validInput = true
+                }
+                5 -> {
+                    viewEvents.add(ViewEvent.ShowLowStockWines)
+                    validInput = true
+                }
+                6 -> {
+                    viewEvents.add(ViewEvent.ListAllWines)
+                    validInput = true
+                }
+                7 -> {
+                    validInput = true
+                }
+                else -> println("Invalid option. Please try again.")
+            }
         }
     }
 
     private fun handleSearchByName() {
-        println("Enter search query:")
-        val query = readLine() ?: return
-        viewEvents.add(ViewEvent.SearchWinesByName(query))
+        while (true) {
+            println("Enter search query:")
+            val query = readLine()?.trim()
+            if (!query.isNullOrEmpty()) {
+                viewEvents.add(ViewEvent.SearchWinesByName(query))
+                return
+            }
+            println("Invalid input. Please try again.")
+        }
     }
 
     private fun handleFilterByVintage() {
-        println("Enter start year:")
-        val startYear = readLine()?.toIntOrNull() ?: return
-        println("Enter end year:")
-        val endYear = readLine()?.toIntOrNull() ?: return
-        viewEvents.add(ViewEvent.FilterByVintage(startYear, endYear))
+        while (true) {
+            println("Enter start year:")
+            val startYear = readLine()?.trim()?.toIntOrNull()
+            if (startYear == null) {
+                println("Invalid year. Please enter a number.")
+                continue
+            }
+
+            println("Enter end year:")
+            val endYear = readLine()?.trim()?.toIntOrNull()
+            if (endYear == null) {
+                println("Invalid year. Please enter a number.")
+                continue
+            }
+
+            if (startYear > endYear) {
+                println("Start year must be less than or equal to end year.")
+                continue
+            }
+
+            viewEvents.add(ViewEvent.FilterByVintage(startYear, endYear))
+            return
+        }
     }
 
     private fun handleFilterByPrice() {
-        println("Enter minimum price:")
-        val minPrice = readLine()?.toDoubleOrNull() ?: return
-        println("Enter maximum price:")
-        val maxPrice = readLine()?.toDoubleOrNull() ?: return
-        viewEvents.add(ViewEvent.FilterByPrice(minPrice, maxPrice))
+        while (true) {
+            println("Enter minimum price:")
+            val minPrice = readLine()?.trim()?.toDoubleOrNull()
+            if (minPrice == null || minPrice < 0) {
+                println("Invalid price. Please enter a positive number.")
+                continue
+            }
+
+            println("Enter maximum price:")
+            val maxPrice = readLine()?.trim()?.toDoubleOrNull()
+            if (maxPrice == null || maxPrice < 0) {
+                println("Invalid price. Please enter a positive number.")
+                continue
+            }
+
+            if (minPrice > maxPrice) {
+                println("Minimum price must be less than or equal to maximum price.")
+                continue
+            }
+
+            viewEvents.add(ViewEvent.FilterByPrice(minPrice, maxPrice))
+            return
+        }
     }
 
     private fun handleFilterByCountry() {
-        println("Enter country code (e.g., FR, IT, ES):")
-        val countryCode = readLine() ?: return
-        viewEvents.add(ViewEvent.FilterByCountry(countryCode))
+        while (true) {
+            println("Enter country code (e.g., FR, IT, ES):")
+            val countryCode = readLine()?.trim()?.uppercase()
+            if (!countryCode.isNullOrEmpty() && countryCode.length == 2) {
+                viewEvents.add(ViewEvent.FilterByCountry(countryCode))
+                return
+            }
+            println("Invalid country code. Please enter a 2-letter code.")
+        }
     }
 
     private fun handleRegisterWine() {
-        println("Enter wine name:")
-        val name = readLine() ?: return
-        println("Enter country code:")
-        val countryCode = readLine() ?: return
-        println("Enter vintage year:")
-        val vintage = readLine()?.toIntOrNull() ?: return
-        println("Enter price:")
-        val price = readLine()?.toDoubleOrNull() ?: return
-        println("Enter quantity:")
-        val quantity = readLine()?.toIntOrNull() ?: return
+        while (true) {
+            println("Enter wine name:")
+            val name = readLine()?.trim()
+            if (name.isNullOrEmpty()) {
+                println("Name cannot be empty. Please try again.")
+                continue
+            }
 
-        viewEvents.add(ViewEvent.RegisterWine(name, countryCode, vintage, price, quantity))
+            println("Enter country code:")
+            val countryCode = readLine()?.trim()?.uppercase()
+            if (countryCode.isNullOrEmpty() || countryCode.length != 2) {
+                println("Invalid country code. Please enter a 2-letter code.")
+                continue
+            }
+
+            println("Enter vintage year:")
+            val vintage = readLine()?.trim()?.toIntOrNull()
+            if (vintage == null || vintage < 1800 || vintage > 2024) {
+                println("Invalid vintage year. Please enter a year between 1800 and 2024.")
+                continue
+            }
+
+            println("Enter price:")
+            val price = readLine()?.trim()?.toDoubleOrNull()
+            if (price == null || price < 0) {
+                println("Invalid price. Please enter a positive number.")
+                continue
+            }
+
+            println("Enter quantity:")
+            val quantity = readLine()?.trim()?.toIntOrNull()
+            if (quantity == null || quantity < 0) {
+                println("Invalid quantity. Please enter a positive number.")
+                continue
+            }
+
+            viewEvents.add(ViewEvent.RegisterWine(name, countryCode, vintage, price, quantity))
+            return
+        }
     }
 
     private fun handleDeleteWine() {
-        println("Enter wine ID to delete:")
-        val id = readLine() ?: return
-        viewEvents.add(ViewEvent.DeleteWine(id))
+        while (true) {
+            println("Enter wine ID to delete:")
+            val id = readLine()?.trim()
+            if (!id.isNullOrEmpty()) {
+                viewEvents.add(ViewEvent.DeleteWine(id))
+                return
+            }
+            println("Invalid ID. Please try again.")
+        }
     }
 
     private fun handleAddWine() {
-        println("Enter wine ID:")
-        val id = readLine() ?: return
-        println("Enter quantity to add:")
-        val quantity = readLine()?.toIntOrNull() ?: return
-        viewEvents.add(ViewEvent.AddWine(id, quantity))
+        while (true) {
+            println("Enter wine ID:")
+            val id = readLine()?.trim()
+            if (id.isNullOrEmpty()) {
+                println("Invalid ID. Please try again.")
+                continue
+            }
+
+            println("Enter quantity to add:")
+            val quantity = readLine()?.trim()?.toIntOrNull()
+            if (quantity == null || quantity <= 0) {
+                println("Invalid quantity. Please enter a positive number.")
+                continue
+            }
+
+            viewEvents.add(ViewEvent.AddWine(id, quantity))
+            return
+        }
     }
 
     private fun handleRetrieveWine() {
-        println("Enter wine ID to retrieve:")
-        val id = readLine() ?: return
-        viewEvents.add(ViewEvent.RetrieveWine(id))
+        while (true) {
+            println("Enter wine ID to retrieve:")
+            val id = readLine()?.trim()
+            if (!id.isNullOrEmpty()) {
+                viewEvents.add(ViewEvent.RetrieveWine(id))
+                return
+            }
+            println("Invalid ID. Please try again.")
+        }
     }
 }
 
