@@ -4,70 +4,66 @@ object InputView {
     val viewEvents = mutableListOf<ViewEvent>()
 
     fun printMenu() {
-        println("Hello, what can I do for you?")
-        println("(A) Manage Inventory")
-        println("(B) Search Inventory")
-        println("(C) Look up Inventory History")
+        println("""
+            1. Register Wine
+            2. Delete Wine
+            3. Add Wine
+            4. Retrieve Wine
+            5. Exit
+            Choose an option:
+        """.trimIndent())
     }
 
     fun selectMenu() {
-        val input = readln()
-        when (input) {
-            "A" -> {
-                println("1. Register Wine")
-                println("2. Delete Wine")
-                println("3. Add Wine")
-                println("4. Retrieve Wine")
-            }
+        val input = readLine()
+        if (input.isNullOrBlank()) {
+            println("Please enter a valid option")
+            return
+        }
 
-            "B" -> {
-                println("Not Supported Yet!")
-            }
-
-            "C" -> {
-                println("Not Supported Yet!")
-            }
+        when (input.toIntOrNull()) {
+            1 -> handleRegisterWine()
+            2 -> handleDeleteWine()
+            3 -> handleAddWine()
+            4 -> handleRetrieveWine()
+            5 -> System.exit(0)
+            else -> println("Invalid option")
         }
     }
 
-    fun selectInventoryManagementMenu() {
-        val input = readln()
-        when (input) {
-            "1" -> {
-                println("Enter wine details:")
-                print("Winery Name: ")
-                val name = readln()
-                print("Country Code: ")
-                val country = readln()
-                print("Vintage: ")
-                val vintage = readln()
-                print("Price: ")
-                val price = readln()
-                print("Quantity: ")
-                val quantity = readln()
+    private fun handleRegisterWine() {
+        println("Enter wine name:")
+        val name = readLine() ?: return
+        println("Enter country code:")
+        val countryCode = readLine() ?: return
+        println("Enter vintage year:")
+        val vintage = readLine()?.toIntOrNull() ?: return
+        println("Enter price:")
+        val price = readLine()?.toDoubleOrNull() ?: return
+        println("Enter quantity:")
+        val quantity = readLine()?.toIntOrNull() ?: return
 
+        viewEvents.add(ViewEvent.RegisterWine(name, countryCode, vintage, price, quantity))
+    }
 
+    private fun handleDeleteWine() {
+        println("Enter wine ID to delete:")
+        val id = readLine() ?: return
+        viewEvents.add(ViewEvent.DeleteWine(id))
+    }
 
-            }
+    private fun handleAddWine() {
+        println("Enter wine ID:")
+        val id = readLine() ?: return
+        println("Enter quantity to add:")
+        val quantity = readLine()?.toIntOrNull() ?: return
+        viewEvents.add(ViewEvent.AddWine(id, quantity))
+    }
 
-            "2" -> {
-
-            }
-
-            "3" -> {
-
-            }
-
-            "4" -> {
-
-            }
-        }
+    private fun handleRetrieveWine() {
+        println("Enter wine ID to retrieve:")
+        val id = readLine() ?: return
+        viewEvents.add(ViewEvent.RetrieveWine(id))
     }
 }
 
-sealed class ViewEvent {
-    class RegisterWine : ViewEvent()
-    class DeleteWine : ViewEvent()
-    class AddWine: ViewEvent()
-    class RetrieveWine : ViewEvent()
-}

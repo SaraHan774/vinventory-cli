@@ -1,63 +1,40 @@
 package com.august.service.inventory
 
-import com.august.domain.model.Wine
-import com.august.repository.inventory.InventoryHistoryRepository
-import com.august.repository.inventory.InventoryRepository
-import com.august.repository.inventory.InventoryRepositoryImpl
-import com.august.service.alert.AlertService
-import com.august.service.alert.ConsoleAlertService
-import com.august.service.alert.ErrorHandler
-import com.august.service.alert.InventoryServiceErrorHandler
-import com.august.usecase.CheckLowStockUseCase
+import com.august.domain.Wine
+import com.august.repository.IWineRepository
+import java.util.UUID
 
 class InventoryService(
-    private val inventoryRepository: InventoryRepository = InventoryRepositoryImpl(),
-    private val errorHandler: ErrorHandler = InventoryServiceErrorHandler(),
-    alertService: AlertService = ConsoleAlertService(),
-) {
-    private val checkLowStockUseCase = CheckLowStockUseCase(
-        inventoryRepository = inventoryRepository,
-        alertService = alertService,
-        lowStockThreshold = 5
-    )
-
-    fun register(wine: Wine, modifiedBy: String) {
-        try {
-            val isSuccess = inventoryRepository.register(wine, modifiedBy)
-            if (isSuccess.not()) throw IllegalStateException()
-        } catch (e: Exception) {
-            errorHandler.handle(e, message = "register failed!")
-        }
+    private val wineRepository: IWineRepository
+) : IInventoryService {
+    
+    override fun registerWine(name: String, countryCode: String, vintage: Int, price: Double, quantity: Int): Wine {
+        val wine = Wine(
+            id = UUID.randomUUID().toString(),
+            name = name,
+            countryCode = countryCode,
+            vintage = vintage,
+            price = price,
+            quantity = quantity
+        )
+        return wineRepository.save(wine)
     }
 
-    fun delete(id: String, modifiedBy: String) {
-        try {
-            val isSuccess = inventoryRepository.delete(id, modifiedBy)
-            if (isSuccess.not()) throw IllegalStateException()
-        } catch (e: Exception) {
-            errorHandler.handle(e, message = "delete failed!")
-        }
+    override fun deleteWine(id: String) {
+        wineRepository.delete(id)
     }
 
-    fun store(id: String, quantity: Int, modifiedBy: String) {
-        try {
-            val isSuccess = inventoryRepository.store(id, quantity, modifiedBy)
-            if (isSuccess) {
-                checkLowStockUseCase.execute(id)
-            }
-        } catch (e: Exception) {
-            errorHandler.handle(e, message = "store failed!")
-        }
+    override fun addWine(id: String, quantity: Int) {
+        val wine = wineRepository.findById(id) ?: throw IllegalArgumentException("Wine not found")
+        val updatedWine = wine.copy(quantity = wine.quantity + quantity)
+        wineRepository.update(updatedWine)
     }
 
-    fun retrieve(id: String, quantity: Int, modifiedBy: String) {
-        try {
-            val isSuccess = inventoryRepository.retrieve(id, quantity, modifiedBy)
-            if (isSuccess) {
-                checkLowStockUseCase.execute(id)
-            }
-        } catch (e: Exception) {
-            errorHandler.handle(e, message = "retrieve failed!")
-        }
+    override fun retrieveWine(id: String): Wine {
+        return wineRepository.findById(id) ?: throw IllegalArgumentException("Wine not found")
+    }
+
+    override fun getAllWines(): List<Wine> {
+        return wineRepository.findAll()
     }
 }

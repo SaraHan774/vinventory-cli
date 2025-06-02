@@ -1,7 +1,7 @@
 package com.august.service.alert
 
-class ConsoleAlertService: AlertService {
-    override fun sendAlert(message: String) {
-        println("ALERT : $message")
+class ConsoleAlertService {
+    fun sendAlert(message: String) {
+        println("ALERT: $message")
     }
 }
