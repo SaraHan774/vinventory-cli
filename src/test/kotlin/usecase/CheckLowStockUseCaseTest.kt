@@ -1,10 +1,9 @@
 package usecase
 
-import com.august.domain.model.Wine
-import com.august.repository.inventory.InventoryRepository
+import com.august.domain.model.v1.Wine
+import com.august.repository.inventory.v1.InventoryRepository
 import com.august.service.alert.AlertService
 import com.august.usecase.CheckLowStockUseCase
-import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

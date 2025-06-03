@@ -1,9 +1,9 @@
 package repository.inventory
 
-import com.august.domain.model.Wine
-import com.august.repository.inventory.InventoryRepositoryImpl
-import com.august.repository.inventory.NotEnoughStockException
-import com.august.repository.inventory.WineNotFoundException
+import com.august.domain.model.v1.Wine
+import com.august.repository.inventory.v1.InventoryRepositoryImpl
+import com.august.repository.inventory.v1.NotEnoughStockException
+import com.august.repository.inventory.v1.WineNotFoundException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test

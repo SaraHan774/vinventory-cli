@@ -1,6 +1,6 @@
 package com.august
 
-import com.august.domain.Wine
+import com.august.domain.v2.Wine
 import com.august.service.inventory.IInventoryService
 import com.august.service.alert.ConsoleAlertService
 import com.august.service.alert.InventoryServiceErrorHandler

@@ -1,9 +1,9 @@
 package repository.inventory
 
-import com.august.domain.model.Wine
-import com.august.repository.inventory.InventoryFilterType.*
-import com.august.repository.inventory.InventorySearchRepositoryImpl
-import com.august.repository.inventory.RangeFilter.*
+import com.august.domain.model.v1.Wine
+import com.august.repository.inventory.v1.InventoryFilterType.*
+import com.august.repository.inventory.v1.InventorySearchRepositoryImpl
+import com.august.repository.inventory.v1.RangeFilter.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals

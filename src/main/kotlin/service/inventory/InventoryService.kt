@@ -1,7 +1,7 @@
 package com.august.service.inventory
 
-import com.august.domain.Wine
-import com.august.repository.IWineRepository
+import com.august.domain.v2.Wine
+import com.august.repository.inventory.v2.IWineRepository
 import java.util.UUID
 
 class InventoryService(

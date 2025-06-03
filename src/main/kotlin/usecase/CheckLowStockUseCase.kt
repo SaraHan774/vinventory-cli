@@ -1,6 +1,6 @@
 package com.august.usecase
 
-import com.august.repository.inventory.InventoryRepository
+import com.august.repository.inventory.v1.InventoryRepository
 import com.august.service.alert.AlertService
 
 class CheckLowStockUseCase(
