@@ -1,6 +1,6 @@
 package com.august.service.inventory
 
-import com.august.domain.Wine
+import com.august.domain.v2.Wine
 
 interface IInventoryService {
     fun registerWine(name: String, countryCode: String, vintage: Int, price: Double, quantity: Int): Wine

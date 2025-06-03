@@ -1,7 +1,7 @@
-package com.august.repository.inventory
+package com.august.repository.inventory.v1
 
-import com.august.domain.model.HistoryType
-import com.august.domain.model.InventoryHistory
+import com.august.domain.model.v1.HistoryType
+import com.august.domain.model.v1.InventoryHistory
 import java.util.*
 
 interface InventoryHistoryRepository {

@@ -1,6 +1,6 @@
-package com.august.repository.inventory
+package com.august.repository.inventory.v1
 
-import com.august.domain.model.Wine
+import com.august.domain.model.v1.Wine
 
 interface InventorySearchRepository {
     //검색

@@ -1,4 +1,4 @@
-package com.august.domain.model
+package com.august.domain.model.v1
 
 data class Wine(
     val id: String,

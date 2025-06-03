@@ -1,4 +1,4 @@
-package com.august.domain
+package com.august.domain.v2
 
 data class Wine(
     val id: String,

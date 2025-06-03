@@ -1,6 +1,6 @@
-package com.august.repository
+package com.august.repository.inventory.v2
 
-import com.august.domain.Wine
+import com.august.domain.v2.Wine
 
 interface IWineRepository {
     fun save(wine: Wine): Wine
