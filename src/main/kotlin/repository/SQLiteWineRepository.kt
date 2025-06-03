@@ -21,7 +21,8 @@ class SQLiteWineRepository : IWineRepository {
     }
 
     override fun findById(id: String): Wine? = transaction {
-        WineTable.select { WineTable.id eq UUID.fromString(id) }
+        WineTable.selectAll()
+            .where { WineTable.id eq UUID.fromString(id) }
             .singleOrNull()
             ?.toWine()
     }
@@ -47,29 +48,36 @@ class SQLiteWineRepository : IWineRepository {
     }
 
     override fun searchByName(query: String): List<Wine> = transaction {
-        WineTable.select { WineTable.name like "%${query}%" }
+        WineTable.selectAll()
+            .where { WineTable.name like "%${query}%" }
             .map { it.toWine() }
     }
 
     override fun filterByVintageRange(startYear: Int, endYear: Int): List<Wine> = transaction {
-        WineTable.select { 
-            WineTable.vintage greaterEq startYear and (WineTable.vintage lessEq endYear)
-        }.map { it.toWine() }
+        WineTable.selectAll()
+            .where { 
+                WineTable.vintage greaterEq startYear and (WineTable.vintage lessEq endYear)
+            }
+            .map { it.toWine() }
     }
 
     override fun filterByPriceRange(minPrice: Double, maxPrice: Double): List<Wine> = transaction {
-        WineTable.select {
-            WineTable.price greaterEq minPrice and (WineTable.price lessEq maxPrice)
-        }.map { it.toWine() }
+        WineTable.selectAll()
+            .where {
+                WineTable.price greaterEq minPrice and (WineTable.price lessEq maxPrice)
+            }
+            .map { it.toWine() }
     }
 
     override fun filterByCountry(countryCode: String): List<Wine> = transaction {
-        WineTable.select { WineTable.countryCode eq countryCode.uppercase() }
+        WineTable.selectAll()
+            .where { WineTable.countryCode eq countryCode.uppercase() }
             .map { it.toWine() }
     }
 
     override fun findLowStock(threshold: Int): List<Wine> = transaction {
-        WineTable.select { WineTable.quantity lessEq threshold }
+        WineTable.selectAll()
+            .where { WineTable.quantity lessEq threshold }
             .map { it.toWine() }
     }
 
