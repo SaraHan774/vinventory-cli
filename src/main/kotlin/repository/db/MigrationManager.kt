@@ -1,6 +1,7 @@
 package com.august.repository.db
 
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 import org.slf4j.LoggerFactory
@@ -95,11 +96,9 @@ class MigrationManager {
     fun status(): List<MigrationStatus> {
         return transaction {
             val appliedMigrations = MigrationTable
-                .selectAll()
-                .map { row ->
+                .selectAll().associate { row ->
                     row[MigrationTable.version] to row[MigrationTable.appliedAt]
                 }
-                .toMap()
 
             migrations
                 .sortedBy { it.version }
