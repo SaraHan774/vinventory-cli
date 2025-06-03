@@ -10,13 +10,17 @@ import com.august.service.alert.InventoryServiceErrorHandler
 import com.august.repository.db.DatabaseFactory
 
 val appModule = module {
-    // Initialize database
-    single { 
+    // Initialize database first
+    single(createdAtStart = true) { 
         DatabaseFactory.init()
+        Unit  // Return Unit since we don't need the result
     }
 
-    // Repositories
-    single<IWineRepository> { SQLiteWineRepository() }
+    // Repositories - depend on database initialization
+    single<IWineRepository> { 
+        get<Unit>() // This ensures database is initialized first
+        SQLiteWineRepository() 
+    }
 
     // Services
     single<IInventoryService> { InventoryService(get()) }
