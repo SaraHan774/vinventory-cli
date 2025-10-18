@@ -6,16 +6,13 @@
  * 반응형 디자인을 지원하며 모바일 친화적인 UI를 제공합니다.
  */
 
-import { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { ThemeProvider, CssBaseline } from '@mui/material';
-import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
-import { Menu as MenuIcon, Add as AddIcon } from '@mui/icons-material';
+import { Box, AppBar, Toolbar, Typography, Button, useMediaQuery, useTheme } from '@mui/material';
+import { Add as AddIcon, Home as HomeIcon } from '@mui/icons-material';
 import WineList from './components/WineList';
 import WineForm from './components/WineForm';
 import WineDetail from './components/WineDetail';
-import { wineTheme } from './theme/wineTheme';
 import { SnackbarProvider } from './contexts/SnackbarContext';
 import './App.css';
 
@@ -30,149 +27,78 @@ const queryClient = new QueryClient({
 });
 
 /**
- * Material-UI AppBar를 사용한 네비게이션 컴포넌트
- * 반응형 디자인을 지원하며 모바일에서는 햄버거 메뉴를 제공합니다.
+ * 간단한 상단 네비게이션 컴포넌트
+ * 깔끔하고 간단한 디자인 원칙을 적용
  */
 function Navigation() {
-  const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
   const location = useLocation();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
-  // 라우트 변경 시 모바일 메뉴 닫기
-  useEffect(() => {
-    setMobileMenuAnchor(null);
-  }, [location]);
-
-  // 모바일 메뉴 열기
-  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setMobileMenuAnchor(event.currentTarget);
-  };
-
-  // 모바일 메뉴 닫기
-  const handleMobileMenuClose = () => {
-    setMobileMenuAnchor(null);
-  };
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <AppBar position="sticky" elevation={2}>
-      <Toolbar>
-        {/* 앱 제목 */}
-        <Typography 
-          variant="h6" 
-          component={Link} 
-          to="/" 
-          sx={{ 
-            flexGrow: 1, 
-            textDecoration: 'none', 
-            color: 'inherit',
-            fontWeight: 600,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1
-          }}
-        >
-          🍷 와인 재고 관리
-        </Typography>
-
-        {/* 데스크톱 메뉴 */}
-        {!isMobile && (
-          <>
-            <Button 
-              color="inherit" 
-              component={Link} 
-              to="/"
-              sx={{ 
-                mx: 1,
-                fontWeight: 500,
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                }
-              }}
-            >
-              목록
-            </Button>
-            <Button 
-              color="inherit" 
-              component={Link} 
-              to="/add"
-              startIcon={<AddIcon />}
-              sx={{ 
-                mx: 1,
-                fontWeight: 500,
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                }
-              }}
-            >
-              와인 등록
-            </Button>
-          </>
-        )}
-
-        {/* 모바일 메뉴 버튼 */}
-        {isMobile && (
-          <IconButton
-            size="large"
-            edge="end"
-            color="inherit"
-            aria-label="메뉴 열기"
-            onClick={handleMobileMenuOpen}
+    <AppBar 
+      position="static" 
+      elevation={0}
+      sx={{ 
+        backgroundColor: 'background.paper',
+        borderBottom: 1,
+        borderColor: 'divider'
+      }}
+    >
+      <Toolbar sx={{ 
+        justifyContent: 'space-between',
+        maxWidth: 800,
+        mx: 'auto',
+        width: '100%'
+      }}>
+        {/* 로고 */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography 
+            variant="h6" 
+            component={Link}
+            to="/"
+            sx={{ 
+              fontWeight: 600,
+              color: 'primary.main',
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }}
           >
-            <MenuIcon />
-          </IconButton>
-        )}
-      </Toolbar>
+            🍷 Vinventory
+          </Typography>
+        </Box>
 
-      {/* 모바일 메뉴 */}
-      <Menu
-        anchorEl={mobileMenuAnchor}
-        open={Boolean(mobileMenuAnchor)}
-        onClose={handleMobileMenuClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        PaperProps={{
-          sx: {
-            mt: 1,
-            minWidth: 200,
-          }
-        }}
-      >
-        <MenuItem 
-          component={Link} 
-          to="/" 
-          onClick={handleMobileMenuClose}
-          sx={{ 
-            py: 1.5,
-            '&:hover': {
-              backgroundColor: 'primary.light',
-              color: 'white'
-            }
-          }}
-        >
-          목록
-        </MenuItem>
-        <MenuItem 
-          component={Link} 
-          to="/add" 
-          onClick={handleMobileMenuClose}
-          sx={{ 
-            py: 1.5,
-            '&:hover': {
-              backgroundColor: 'primary.light',
-              color: 'white'
-            }
-          }}
-        >
-          와인 등록
-        </MenuItem>
-      </Menu>
+        {/* 네비게이션 메뉴 */}
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button
+            component={Link}
+            to="/"
+            startIcon={<HomeIcon />}
+            variant={location.pathname === '/' ? 'contained' : 'text'}
+            size="small"
+            sx={{ 
+              fontWeight: 600,
+              display: isMobile ? 'none' : 'flex'
+            }}
+          >
+            홈
+          </Button>
+          <Button
+            component={Link}
+            to="/add"
+            startIcon={<AddIcon />}
+            variant="contained"
+            size="small"
+            sx={{ 
+              fontWeight: 600
+            }}
+          >
+            {isMobile ? '' : '와인 등록'}
+          </Button>
+        </Box>
+      </Toolbar>
     </AppBar>
   );
 }
@@ -180,37 +106,37 @@ function Navigation() {
 /**
  * 메인 App 컴포넌트
  * 
- * Material-UI ThemeProvider와 CssBaseline을 사용하여 전체 애플리케이션을 구성합니다.
+ * Material Design 3 스타일의 레이아웃을 적용한 전체 애플리케이션을 구성합니다.
  * 
  * @returns JSX 요소
  */
 function App() {
   return (
-    <ThemeProvider theme={wineTheme}>
-      <CssBaseline />
-      <SnackbarProvider>
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <div className="app">
-              <Navigation />
-
-              <main className="app-main">
-                <Routes>
-                  <Route path="/" element={<WineList />} />
-                  <Route path="/add" element={<WineForm />} />
-                  <Route path="/wine/:id" element={<WineDetail />} />
-                  <Route path="/wine/:id/edit" element={<WineForm />} />
-                </Routes>
-              </main>
-
-              <footer className="app-footer">
-                <p>&copy; 2024 와인 재고 관리 시스템. Material-UI와 Ktor로 구축되었습니다.</p>
-              </footer>
-            </div>
-          </Router>
-        </QueryClientProvider>
-      </SnackbarProvider>
-    </ThemeProvider>
+    <SnackbarProvider>
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <Box sx={{ 
+            minHeight: '100vh', 
+            backgroundColor: 'background.default',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            {/* 네비게이션 */}
+            <Navigation />
+            
+            {/* 메인 콘텐츠 영역 */}
+            <Box component="main" sx={{ flex: 1 }}>
+              <Routes>
+                <Route path="/" element={<WineList />} />
+                <Route path="/add" element={<WineForm />} />
+                <Route path="/wine/:id" element={<WineDetail />} />
+                <Route path="/wine/:id/edit" element={<WineForm />} />
+              </Routes>
+            </Box>
+          </Box>
+        </Router>
+      </QueryClientProvider>
+    </SnackbarProvider>
   );
 }
 
