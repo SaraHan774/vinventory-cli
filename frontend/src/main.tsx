@@ -6,7 +6,9 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { ThemeProvider, CssBaseline } from '@mui/material'
 import App from './App.tsx'
+import wineTheme from './theme/wineTheme.ts'
 import './index.css'
 
 // PWA 서비스 워커 등록
@@ -24,6 +26,9 @@ if ('serviceWorker' in navigator) {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={wineTheme}>
+      <CssBaseline />
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
 )
