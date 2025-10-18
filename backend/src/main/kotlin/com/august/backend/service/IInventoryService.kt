@@ -45,6 +45,14 @@ interface IInventoryService {
     fun retrieveWine(id: String): Wine
     
     /**
+     * 와인 정보 업데이트
+     * 
+     * @param wine 업데이트할 와인 객체
+     * @return 업데이트된 와인 객체
+     */
+    fun updateWine(wine: Wine): Wine
+    
+    /**
      * 모든 와인 조회
      * 
      * @return 모든 와인 목록

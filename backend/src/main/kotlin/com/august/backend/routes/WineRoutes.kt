@@ -93,8 +93,8 @@ fun Route.wineRoutes(inventoryService: IInventoryService) {
                     quantity = request.quantity ?: existingWine.quantity
                 )
                 
-                // TODO: Repository에 update 메서드가 필요함 (현재는 addWine만 있음)
-                // inventoryService.updateWine(updatedWine)
+                // 실제 와인 업데이트 수행
+                inventoryService.updateWine(updatedWine)
                 
                 logger.info("Updated wine: $id")
                 call.respond(HttpStatusCode.OK, updatedWine)

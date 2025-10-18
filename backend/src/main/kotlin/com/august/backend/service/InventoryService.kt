@@ -51,6 +51,10 @@ class InventoryService(
         return wineRepository.findById(id) ?: throw IllegalArgumentException("Wine not found")
     }
 
+    override fun updateWine(wine: Wine): Wine {
+        return wineRepository.update(wine)
+    }
+
     override fun getAllWines(): List<Wine> {
         return wineRepository.findAll()
     }
