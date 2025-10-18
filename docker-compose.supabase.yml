@@ -1,0 +1,43 @@
+# Supabase 기반 Docker Compose 설정
+# 로컬 개발용 (Supabase 로컬 인스턴스)
+
+version: '3.8'
+
+services:
+  # Supabase 로컬 스택
+  supabase:
+    image: supabase/postgres:15.1.0.117
+    ports:
+      - "54322:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - supabase_data:/var/lib/postgresql/data
+
+  # Supabase Studio (웹 UI)
+  studio:
+    image: supabase/studio:20231215-0b1b8b0
+    ports:
+      - "3000:3000"
+    environment:
+      SUPABASE_URL: http://localhost:54321
+      SUPABASE_REST_URL: http://localhost:54321/rest/v1/
+      SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+      SUPABASE_SERVICE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
+
+  # 프론트엔드 (로컬 Supabase 연결)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_SUPABASE_URL=http://localhost:54321
+      - VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+    depends_on:
+      - supabase
+
+volumes:
+  supabase_data:
