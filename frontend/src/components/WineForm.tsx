@@ -132,13 +132,15 @@ export default function WineForm() {
         // 수정 로직
         await updateWineMutation.mutateAsync({ id, wineData });
         showSuccess('와인 정보가 수정되었습니다.');
+        // 수정 완료 후 상세 화면으로 이동
+        navigate(`/wine/${id}`);
       } else {
         // 등록 로직
         await createWineMutation.mutateAsync(wineData);
         showSuccess('와인이 등록되었습니다.');
+        // 등록 완료 후 홈으로 이동
+        navigate('/');
       }
-      
-      navigate('/');
     } catch (error) {
       showError('오류가 발생했습니다. 다시 시도해주세요.');
     }
@@ -146,7 +148,13 @@ export default function WineForm() {
 
   // 취소 핸들러
   const handleCancel = () => {
-    navigate('/');
+    if (isEdit && id) {
+      // 수정 모드일 때는 상세 화면으로 돌아가기
+      navigate(`/wine/${id}`);
+    } else {
+      // 등록 모드일 때는 홈으로 돌아가기
+      navigate('/');
+    }
   };
 
   // 수정 모드에서 기존 데이터 로딩 중일 때
