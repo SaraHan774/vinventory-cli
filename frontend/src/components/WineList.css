@@ -1,0 +1,490 @@
+/* 와인 목록 컴포넌트 스타일 */
+
+.wine-list {
+  padding: 0;
+  width: 100%;
+}
+
+.wine-list-header {
+  margin-bottom: 24px;
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.wine-list-header h2 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.wine-list-controls {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 300px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  background: #f8f9fa;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #007bff;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.search-input::placeholder {
+  color: #6c757d;
+}
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #495057;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.checkbox-label:hover {
+  background-color: #f8f9fa;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #007bff;
+  cursor: pointer;
+}
+
+.checkbox-text {
+  font-size: 14px;
+  color: #495057;
+  font-weight: 500;
+}
+
+.wine-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 24px;
+  padding: 0;
+}
+
+.wine-card {
+  border: 1px solid #e1e5e9;
+  border-radius: 12px;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.wine-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.wine-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #007bff;
+}
+
+.wine-card:hover::before {
+  opacity: 1;
+}
+
+.wine-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.wine-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.wine-quantity {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #28a745;
+  color: white;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+.wine-quantity.low-stock {
+  background: #dc3545;
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.wine-details {
+  margin-bottom: 20px;
+}
+
+.wine-info {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wine-info span {
+  padding: 6px 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #495057;
+  border: 1px solid #e9ecef;
+  font-weight: 500;
+}
+
+.wine-country {
+  font-weight: 700;
+  text-transform: uppercase;
+  background: #e3f2fd !important;
+  color: #1976d2 !important;
+  border-color: #bbdefb !important;
+}
+
+.wine-vintage {
+  font-weight: 600;
+  background: #f3e5f5 !important;
+  color: #7b1fa2 !important;
+  border-color: #e1bee7 !important;
+}
+
+.wine-price {
+  font-weight: 700;
+  color: #007bff !important;
+  background: #e8f4fd !important;
+  border-color: #b3d9ff !important;
+}
+
+.wine-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px; /* 터치 친화적인 최소 크기 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  flex: 1;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+.btn-danger:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.loading, .error, .empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6c757d;
+  font-size: 18px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+}
+
+.error {
+  color: #dc3545;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+.empty-state {
+  color: #6c757d;
+  font-style: italic;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+/* 반응형 디자인 - 태블릿 (1024px 이하) */
+@media (max-width: 1024px) {
+  .wine-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .wine-list-header {
+    padding: 20px;
+  }
+  
+  .wine-list-header h2 {
+    font-size: 24px;
+  }
+}
+
+/* 반응형 디자인 - 모바일 (768px 이하) */
+@media (max-width: 768px) {
+  .wine-list {
+    /* 모바일에서 전체 화면 활용 */
+    padding: 0;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .wine-list-header {
+    /* 모바일에서 헤더 스타일 */
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* 모바일에서 고정 헤더 */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: white;
+  }
+  
+  .wine-list-header h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  
+  .wine-list-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .search-box {
+    min-width: auto;
+    max-width: none;
+  }
+  
+  .search-input {
+    font-size: 16px; /* iOS 줌 방지 */
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid #e1e5e9;
+  }
+  
+  .filter-controls {
+    justify-content: center;
+  }
+  
+  .wine-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 0 16px 16px 16px;
+  }
+  
+  .wine-card {
+    padding: 16px;
+    border-radius: 16px;
+    /* 모바일에서 카드 스타일 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f0f0;
+  }
+  
+  .wine-actions {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    /* 모바일에서 터치 최적화 */
+    min-height: 48px;
+  }
+  
+  /* 모바일에서 로딩/에러 상태 */
+  .loading, .error, .empty-state {
+    padding: 40px 16px;
+    margin: 16px;
+    border-radius: 16px;
+  }
+}
+
+/* 반응형 디자인 - 소형 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .wine-list-header {
+    padding: 12px;
+    border-radius: 8px;
+  }
+  
+  .wine-list-header h2 {
+    font-size: 20px;
+  }
+  
+  .wine-card {
+    padding: 12px;
+    border-radius: 8px;
+  }
+  
+  .wine-name {
+    font-size: 16px;
+  }
+  
+  .wine-info {
+    gap: 6px;
+  }
+  
+  .wine-info span {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  
+  .loading, .error, .empty-state {
+    padding: 40px 16px;
+    font-size: 16px;
+  }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .wine-list-header {
+    background: #2d3748;
+    color: #e2e8f0;
+  }
+  
+  .wine-list-header h2 {
+    color: #e2e8f0;
+  }
+  
+  .search-input {
+    background: #4a5568;
+    border-color: #718096;
+    color: #e2e8f0;
+  }
+  
+  .search-input:focus {
+    background: #2d3748;
+    border-color: #3182ce;
+  }
+  
+  .search-input::placeholder {
+    color: #a0aec0;
+  }
+  
+  .checkbox-label {
+    color: #e2e8f0;
+  }
+  
+  .checkbox-label:hover {
+    background-color: #4a5568;
+  }
+  
+  .wine-card {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+  }
+  
+  .wine-name {
+    color: #e2e8f0;
+  }
+  
+  .wine-info span {
+    background: #4a5568;
+    color: #e2e8f0;
+    border-color: #718096;
+  }
+  
+  .loading, .error, .empty-state {
+    background: #2d3748;
+    color: #e2e8f0;
+    border-color: #4a5568;
+  }
+}

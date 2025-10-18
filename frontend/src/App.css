@@ -1,0 +1,346 @@
+/* 메인 App 컴포넌트 스타일 */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f5f5;
+  line-height: 1.6;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.app-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  width: 100%;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: white;
+  transition: opacity 0.2s ease;
+}
+
+.nav-link:hover {
+  opacity: 0.9;
+}
+
+.nav-link h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* 데스크톱 메뉴 */
+.desktop-menu {
+  display: flex;
+}
+
+/* 모바일 메뉴 토글 버튼 */
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 햄버거 아이콘 */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  width: 24px;
+  height: 18px;
+  position: relative;
+}
+
+.hamburger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: white;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger span:nth-child(1) {
+  margin-bottom: 6px;
+}
+
+.hamburger span:nth-child(2) {
+  margin-bottom: 6px;
+}
+
+/* 햄버거 메뉴 열림 상태 */
+.hamburger.open span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* 모바일 메뉴 */
+.mobile-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 0 0 12px 12px;
+  padding: 1rem;
+  z-index: 1000;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu.open {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.mobile-menu .nav-item {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mobile-menu .nav-item:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-menu .nav-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: none;
+}
+
+.nav-item {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-height: 44px; /* 터치 친화적인 최소 크기 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.app-main {
+  flex: 1;
+  padding: 2rem;
+  width: 100%;
+}
+
+.app-footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  margin-top: auto;
+  border-top: 1px solid #444;
+}
+
+.app-footer p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* 반응형 디자인 - 태블릿 (1024px 이하) */
+@media (max-width: 1024px) {
+  .app-nav {
+    padding: 1rem 1.5rem;
+  }
+  
+  .nav-link h1 {
+    font-size: 22px;
+  }
+  
+  .nav-menu {
+    gap: 1.5rem;
+  }
+  
+  .app-main {
+    padding: 1.5rem;
+  }
+}
+
+/* 반응형 디자인 - 모바일 (768px 이하) */
+@media (max-width: 768px) {
+  /* 모바일 앱 스타일 */
+  body {
+    /* iOS Safari에서 주소창 숨기기 */
+    height: 100vh;
+    height: -webkit-fill-available;
+    overflow: hidden;
+    /* 모바일 앱 스타일 */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .app {
+    /* 모바일에서 전체 화면 */
+    height: 100vh;
+    height: -webkit-fill-available;
+    overflow: hidden;
+    width: 100%;
+  }
+  
+  .app-header {
+    /* 모바일에서 상태바 영역 고려 */
+    padding-top: env(safe-area-inset-top);
+    /* iOS에서 상태바와 헤더 통합 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* 모바일에서 헤더 높이 고정 */
+    min-height: 60px;
+  }
+  
+  .app-nav {
+    position: relative;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    /* 모바일에서 네비게이션 높이 고정 */
+    min-height: 60px;
+  }
+  
+  .nav-link h1 {
+    font-size: 20px;
+    text-align: left;
+    /* 모바일에서 제목 크기 조정 */
+    font-weight: 700;
+  }
+  
+  /* 데스크톱 메뉴 숨기기 */
+  .desktop-menu {
+    display: none;
+  }
+  
+  /* 모바일 메뉴 토글 버튼 표시 */
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  /* 모바일 메뉴 표시 */
+  .mobile-menu {
+    display: block;
+  }
+  
+  .app-main {
+    /* 모바일에서 전체 화면 활용 */
+    padding: 1rem;
+    max-width: none;
+    height: calc(100vh - 120px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    height: calc(-webkit-fill-available - 120px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* 모바일에서 스크롤 최적화 */
+    overscroll-behavior: contain;
+  }
+  
+  .app-footer {
+    /* 모바일에서 푸터 숨기기 또는 최소화 */
+    display: none;
+  }
+}
+
+/* 반응형 디자인 - 소형 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .app-nav {
+    padding: 0.75rem;
+  }
+  
+  .nav-link h1 {
+    font-size: 18px;
+  }
+  
+  .mobile-menu {
+    padding: 0.75rem;
+  }
+  
+  .mobile-menu .nav-item {
+    padding: 0.75rem;
+    font-size: 14px;
+  }
+  
+  .app-main {
+    padding: 0.75rem;
+  }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+  }
+  
+  .app-main {
+    background-color: transparent;
+  }
+}
