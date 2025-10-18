@@ -5,7 +5,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import type { Wine } from '../types/wine'
+import type { Wine, CreateWineRequest } from '../types/wine'
 
 // Supabase 설정
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
@@ -61,10 +61,17 @@ export class WineService {
   /**
    * 와인 생성
    */
-  static async createWine(wineData: Omit<Wine, 'id'>): Promise<Wine> {
+  static async createWine(wineData: CreateWineRequest): Promise<Wine> {
+    const now = new Date().toISOString();
+    const fullWineData = {
+      ...wineData,
+      created_at: now,
+      updated_at: now
+    };
+
     const { data, error } = await supabase
       .from('wines')
-      .insert([wineData])
+      .insert([fullWineData])
       .select()
       .single()
 

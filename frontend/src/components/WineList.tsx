@@ -2,7 +2,7 @@
  * 와인 목록 컴포넌트
  * 
  * Material-UI 컴포넌트를 사용하여 와인 목록을 표시하고 검색/필터링 기능을 제공합니다.
- * Grid 시스템, Card, TextField, Chip, Fab 등을 활용한 현대적인 UI를 제공합니다.
+ * Grid 시스템, Card, TextField, Chip 등을 활용한 현대적인 UI를 제공합니다.
  */
 
 import { useState } from 'react';
@@ -20,7 +20,6 @@ import {
   Button,
   Chip,
   Box,
-  Fab,
   FormControlLabel,
   Checkbox,
   CircularProgress,
@@ -30,7 +29,7 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material';
-import { Add as AddIcon, Search as SearchIcon, Delete as DeleteIcon, Visibility as ViewIcon } from '@mui/icons-material';
+import { Add as AddIcon, Search as SearchIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../contexts/SnackbarContext';
 
@@ -131,9 +130,9 @@ export function WineList({ onWineSelect }: WineListProps) {
 
   return (
     <Box sx={{ 
-      maxWidth: 800, 
+      maxWidth: { xs: '100%', sm: 800 }, 
       mx: 'auto', 
-      p: { xs: 2, sm: 3, md: 4 },
+      p: { xs: 1, sm: 3, md: 4 },
       minHeight: '100vh',
       width: '100%'
     }}>
@@ -339,18 +338,6 @@ export function WineList({ onWineSelect }: WineListProps) {
                   }}>
                     <IconButton
                       size="small"
-                      onClick={() => handleWineSelect(wine)}
-                      sx={{ 
-                        color: 'primary.main',
-                        '&:hover': {
-                          backgroundColor: 'primary.light'
-                        }
-                      }}
-                    >
-                      <ViewIcon fontSize="small" />
-                    </IconButton>
-                    <IconButton
-                      size="small"
                       onClick={() => handleDeleteWine(wine.id)}
                       sx={{ 
                         color: 'error.main',
@@ -370,20 +357,6 @@ export function WineList({ onWineSelect }: WineListProps) {
         </Box>
       )}
 
-      {/* Floating Action Button - 와인 추가 */}
-      <Fab
-        color="primary"
-        aria-label="와인 추가"
-        onClick={handleAddWine}
-        sx={{
-          position: 'fixed',
-          bottom: 24,
-          right: 24,
-          zIndex: 1000
-        }}
-      >
-        <AddIcon />
-      </Fab>
     </Box>
   );
 }

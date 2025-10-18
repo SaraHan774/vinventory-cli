@@ -6,13 +6,14 @@
  * 반응형 디자인을 지원하며 모바일 친화적인 UI를 제공합니다.
  */
 
+import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Box, AppBar, Toolbar, Typography, Button, useMediaQuery, useTheme } from '@mui/material';
-import { Add as AddIcon, Home as HomeIcon } from '@mui/icons-material';
+import { Box, AppBar, Toolbar, Typography, Button, useMediaQuery, useTheme, IconButton, Menu, MenuItem } from '@mui/material';
+import { Add as AddIcon, Home as HomeIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
 import WineList from './components/WineList';
-import WineForm from './components/WineForm';
-import WineDetail from './components/WineDetail';
+import WineForm from './components/WineForm.js';
+import WineDetail from './components/WineDetail.js';
 import { SnackbarProvider } from './contexts/SnackbarContext';
 import './App.css';
 
@@ -34,6 +35,16 @@ function Navigation() {
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <AppBar 
@@ -42,14 +53,17 @@ function Navigation() {
       sx={{ 
         backgroundColor: 'background.paper',
         borderBottom: 1,
-        borderColor: 'divider'
+        borderColor: 'divider',
+        borderRadius: 0 // 모서리 rounding 제거
       }}
     >
       <Toolbar sx={{ 
         justifyContent: 'space-between',
-        maxWidth: 800,
+        maxWidth: { xs: '100%', sm: 800 },
         mx: 'auto',
-        width: '100%'
+        width: '100%',
+        px: { xs: 1, sm: 2 },
+        borderRadius: 0 // 모서리 rounding 제거
       }}>
         {/* 로고 */}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -71,33 +85,87 @@ function Navigation() {
         </Box>
 
         {/* 네비게이션 메뉴 */}
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button
-            component={Link}
-            to="/"
-            startIcon={<HomeIcon />}
-            variant={location.pathname === '/' ? 'contained' : 'text'}
-            size="small"
-            sx={{ 
-              fontWeight: 600,
-              display: isMobile ? 'none' : 'flex'
-            }}
-          >
-            홈
-          </Button>
-          <Button
-            component={Link}
-            to="/add"
-            startIcon={<AddIcon />}
-            variant="contained"
-            size="small"
-            sx={{ 
-              fontWeight: 600
-            }}
-          >
-            {isMobile ? '' : '와인 등록'}
-          </Button>
-        </Box>
+        {isMobile ? (
+          // 모바일: 더보기 버튼과 드롭다운 메뉴
+          <>
+            <IconButton
+              onClick={handleMenuClick}
+              sx={{ color: 'primary.main' }}
+            >
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleMenuClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <MenuItem 
+                component={Link} 
+                to="/" 
+                onClick={handleMenuClose}
+                sx={{ 
+                  color: location.pathname === '/' ? 'primary.main' : 'text.primary',
+                  fontWeight: location.pathname === '/' ? 600 : 400
+                }}
+              >
+                <HomeIcon sx={{ mr: 1 }} />
+                홈
+              </MenuItem>
+              <MenuItem 
+                component={Link} 
+                to="/add" 
+                onClick={handleMenuClose}
+                sx={{ 
+                  color: 'primary.main',
+                  fontWeight: 600
+                }}
+              >
+                <AddIcon sx={{ mr: 1 }} />
+                등록
+              </MenuItem>
+            </Menu>
+          </>
+        ) : (
+          // 데스크탑: 일반 버튼들
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button
+              component={Link}
+              to="/"
+              startIcon={<HomeIcon />}
+              variant={location.pathname === '/' ? 'contained' : 'text'}
+              size="small"
+              sx={{ 
+                fontWeight: 600,
+                minWidth: 'auto',
+                px: 2
+              }}
+            >
+              홈
+            </Button>
+            <Button
+              component={Link}
+              to="/add"
+              startIcon={<AddIcon />}
+              variant="text"
+              size="small"
+              sx={{ 
+                fontWeight: 600,
+                minWidth: 'auto',
+                px: 2
+              }}
+            >
+              등록
+            </Button>
+          </Box>
+        )}
       </Toolbar>
     </AppBar>
   );

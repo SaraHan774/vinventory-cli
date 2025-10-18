@@ -5,8 +5,8 @@
  * 표준적인 웹사이트 레이아웃으로 중앙 정렬되어 있습니다.
  */
 
-import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useWine, useUpdateWine } from '../hooks/useWines';
 import {
   Typography,
   Box,
@@ -19,8 +19,7 @@ import {
   CircularProgress,
   Alert,
   Card,
-  CardContent,
-  CardActions
+  CardContent
 } from '@mui/material';
 import { 
   ArrowBack as ArrowBackIcon, 
@@ -30,7 +29,6 @@ import {
   Remove as RemoveIcon
 } from '@mui/icons-material';
 import { useSnackbar } from '../contexts/SnackbarContext';
-import type { Wine } from '../types/wine';
 
 /**
  * 와인 상세 컴포넌트
@@ -42,42 +40,10 @@ export default function WineDetail() {
   const navigate = useNavigate();
   const { showSuccess, showError } = useSnackbar();
   
-  const [wine, setWine] = useState<Wine | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // React Query 훅 사용
+  const { data: wine, isLoading: loading, error } = useWine(id!);
+  const updateWineMutation = useUpdateWine();
 
-  // 와인 데이터 로드 (임시 데이터)
-  useEffect(() => {
-    const loadWine = async () => {
-      try {
-        setLoading(true);
-        // TODO: 실제 API 호출 구현
-        await new Promise(resolve => setTimeout(resolve, 1000)); // 임시 지연
-        
-        // 임시 와인 데이터
-        const mockWine: Wine = {
-          id: id || '1',
-          name: 'Château Margaux 2015',
-          country_code: 'FR',
-          vintage: 2015,
-          price: 899.99,
-          quantity: 12,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-        
-        setWine(mockWine);
-      } catch (err) {
-        setError('와인 정보를 불러오는 중 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) {
-      loadWine();
-    }
-  }, [id]);
 
   // 수량 변경 핸들러
   const handleQuantityChange = async (delta: number) => {
@@ -86,10 +52,12 @@ export default function WineDetail() {
     const newQuantity = Math.max(0, wine.quantity + delta);
     
     try {
-      // TODO: 실제 API 호출 구현
-      await new Promise(resolve => setTimeout(resolve, 500)); // 임시 지연
+      // 실제 API 호출
+      await updateWineMutation.mutateAsync({
+        id: wine.id,
+        wineData: { quantity: newQuantity }
+      });
       
-      setWine(prev => prev ? { ...prev, quantity: newQuantity } : null);
       showSuccess(`재고가 ${delta > 0 ? '증가' : '감소'}되었습니다.`);
     } catch (error) {
       showError('재고 변경 중 오류가 발생했습니다.');
@@ -148,14 +116,14 @@ export default function WineDetail() {
   if (error || !wine) {
     return (
       <Box sx={{ 
-        maxWidth: 800, 
+        maxWidth: { xs: '100%', sm: 800 }, 
         mx: 'auto', 
-        p: { xs: 2, sm: 3, md: 4 },
+        p: { xs: 1, sm: 3, md: 4 },
         minHeight: '100vh',
         width: '100%'
       }}>
         <Alert severity="error" sx={{ mb: 2 }}>
-          {error || '와인을 찾을 수 없습니다.'}
+          {error?.message || '와인을 찾을 수 없습니다.'}
         </Alert>
         <Button variant="contained" onClick={handleBack}>
           목록으로 돌아가기
@@ -166,62 +134,86 @@ export default function WineDetail() {
 
   return (
     <Box sx={{ 
-      maxWidth: 800, 
+      maxWidth: { xs: '100%', sm: 800 }, 
       mx: 'auto', 
-      p: { xs: 2, sm: 3, md: 4 },
+      p: { xs: 1, sm: 3, md: 4 },
       minHeight: '100vh',
       width: '100%'
     }}>
       <Paper 
         elevation={1}
         sx={{ 
-          p: { xs: 3, sm: 4, md: 5 },
+          p: { xs: 2, sm: 4, md: 5 },
           borderRadius: 2,
           border: 1,
           borderColor: 'divider'
         }}
       >
         {/* 헤더 */}
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-          <IconButton 
-            onClick={handleBack}
-            sx={{ mr: 2, color: 'primary.main' }}
+        <Box sx={{ mb: 4 }}>
+          {/* 상단: 뒤로가기 버튼과 액션 버튼들 */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <IconButton 
+              onClick={handleBack}
+              sx={{ color: 'primary.main' }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            <Box sx={{ display: 'flex', gap: 0.5 }}>
+              <IconButton
+                onClick={handleEdit}
+                sx={{ 
+                  color: 'primary.main',
+                  '&:hover': {
+                    backgroundColor: 'primary.light',
+                    color: 'primary.contrastText'
+                  }
+                }}
+                title="수정"
+              >
+                <EditIcon />
+              </IconButton>
+              <IconButton
+                onClick={handleDelete}
+                sx={{ 
+                  color: 'error.main',
+                  '&:hover': {
+                    backgroundColor: 'error.light',
+                    color: 'error.contrastText'
+                  }
+                }}
+                title="삭제"
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          </Box>
+          
+          {/* 하단: 와인 이름 (전체 너비 사용) */}
+          <Typography 
+            variant="h4" 
+            component="h1" 
+            sx={{ 
+              fontWeight: 600,
+              textAlign: 'center',
+              wordBreak: 'break-word' // 긴 이름도 줄바꿈 허용
+            }}
           >
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h4" component="h1" sx={{ flexGrow: 1, fontWeight: 600 }}>
             🍷 {wine.name}
           </Typography>
-          <Button
-            variant="outlined"
-            startIcon={<EditIcon />}
-            onClick={handleEdit}
-            sx={{ mr: 1 }}
-          >
-            수정
-          </Button>
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={handleDelete}
-          >
-            삭제
-          </Button>
         </Box>
 
         <Divider sx={{ mb: 4 }} />
 
         {/* 와인 정보 */}
-        <Grid container spacing={4}>
-          {/* 기본 정보 */}
-          <Grid item xs={12} md={6}>
-            <Card elevation={2} sx={{ height: '100%' }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
-                  기본 정보
-                </Typography>
-                
+        <Card elevation={2} sx={{ mb: 4 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+              기본 정보
+            </Typography>
+            
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
                     와인 이름
@@ -230,7 +222,9 @@ export default function WineDetail() {
                     {wine.name}
                   </Typography>
                 </Box>
+              </Grid>
 
+              <Grid item xs={12} sm={6}>
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
                     국가
@@ -242,7 +236,9 @@ export default function WineDetail() {
                     sx={{ fontWeight: 600, textTransform: 'uppercase' }}
                   />
                 </Box>
+              </Grid>
 
+              <Grid item xs={12} sm={6}>
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
                     연도
@@ -254,7 +250,9 @@ export default function WineDetail() {
                     sx={{ fontWeight: 600 }}
                   />
                 </Box>
+              </Grid>
 
+              <Grid item xs={12} sm={6}>
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="body2" color="text.secondary" gutterBottom>
                     가격
@@ -263,67 +261,93 @@ export default function WineDetail() {
                     ${wine.price.toFixed(2)}
                   </Typography>
                 </Box>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
 
-                <Box>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
+        {/* 재고 관리 - 독립적인 섹션 */}
+        <Box sx={{ 
+          backgroundColor: 'background.paper',
+          border: 1,
+          borderColor: 'divider',
+          borderRadius: 2,
+          p: 3,
+          mb: 4
+        }}>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3, textAlign: 'center' }}>
+            재고 관리
+          </Typography>
+          
+          {/* 재고 수량과 버튼들을 가로로 배치 */}
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            gap: 4
+          }}>
+            {/* 감소 버튼 */}
+            <IconButton
+              onClick={() => handleQuantityChange(-1)}
+              disabled={wine.quantity <= 0}
+              sx={{ 
+                color: 'error.main',
+                border: 1,
+                borderColor: 'error.main',
+                '&:hover': {
+                  backgroundColor: 'error.light',
+                  color: 'error.contrastText'
+                },
+                '&:disabled': {
+                  color: 'action.disabled',
+                  borderColor: 'action.disabled'
+                }
+              }}
+              title="재고 감소"
+            >
+              <RemoveIcon />
+            </IconButton>
 
-          {/* 재고 관리 */}
-          <Grid item xs={12} md={6}>
-            <Card elevation={2} sx={{ height: '100%' }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
-                  재고 관리
-                </Typography>
-                
-                <Box sx={{ textAlign: 'center', mb: 3 }}>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    현재 재고
-                  </Typography>
-                  <Typography 
-                    variant="h2" 
-                    color={wine.quantity <= 5 ? 'error.main' : 'success.main'}
-                    sx={{ fontWeight: 700, mb: 2 }}
-                  >
-                    {wine.quantity}개
-                  </Typography>
-                  
-                  {wine.quantity <= 5 && (
-                    <Chip 
-                      label="재고 부족" 
-                      color="error" 
-                      variant="filled"
-                      sx={{ mb: 2 }}
-                    />
-                  )}
-                </Box>
+            {/* 재고 수량 (중앙) */}
+            <Box sx={{ textAlign: 'center', minWidth: 150 }}>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                현재 재고
+              </Typography>
+              <Typography 
+                variant="h2" 
+                color={wine.quantity <= 5 ? 'error.main' : 'success.main'}
+                sx={{ fontWeight: 700, mb: 1 }}
+              >
+                {wine.quantity}개
+              </Typography>
+              {wine.quantity <= 5 && (
+                <Chip 
+                  label="재고 부족" 
+                  color="error" 
+                  variant="filled"
+                  size="small"
+                />
+              )}
+            </Box>
 
-                <CardActions sx={{ justifyContent: 'center', gap: 1 }}>
-                  <Button
-                    variant="outlined"
-                    startIcon={<RemoveIcon />}
-                    onClick={() => handleQuantityChange(-1)}
-                    disabled={wine.quantity <= 0}
-                    color="error"
-                  >
-                    감소
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    startIcon={<AddIcon />}
-                    onClick={() => handleQuantityChange(1)}
-                    color="success"
-                  >
-                    증가
-                  </Button>
-                </CardActions>
-              </CardContent>
-            </Card>
-          </Grid>
-
-        </Grid>
+            {/* 증가 버튼 */}
+            <IconButton
+              onClick={() => handleQuantityChange(1)}
+              sx={{ 
+                color: 'success.main',
+                border: 1,
+                borderColor: 'success.main',
+                '&:hover': {
+                  backgroundColor: 'success.light',
+                  color: 'success.contrastText'
+                }
+              }}
+              title="재고 증가"
+            >
+              <AddIcon />
+            </IconButton>
+          </Box>
+        </Box>
       </Paper>
     </Box>
   );

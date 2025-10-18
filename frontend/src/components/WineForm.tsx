@@ -5,7 +5,7 @@
  * 표준적인 웹사이트 레이아웃으로 중앙 정렬되어 있습니다.
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Typography,
@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { Save as SaveIcon, Cancel as CancelIcon } from '@mui/icons-material';
 import { useSnackbar } from '../contexts/SnackbarContext';
-import { useCreateWine, useUpdateWine } from '../hooks/useWines';
+import { useCreateWine, useUpdateWine, useWine } from '../hooks/useWines';
 
 /**
  * 와인 폼 컴포넌트
@@ -35,6 +35,7 @@ export default function WineForm() {
   // React Query 훅 사용
   const createWineMutation = useCreateWine();
   const updateWineMutation = useUpdateWine();
+  const { data: existingWine, isLoading: loadingWine } = useWine(id || '');
 
   // 폼 상태 관리
   const [formData, setFormData] = useState({
@@ -46,8 +47,21 @@ export default function WineForm() {
     // description과 isActive 필드 제거 (DB에 없음)
   });
 
+  // 기존 데이터를 폼에 로드 (수정 모드일 때만)
+  useEffect(() => {
+    if (isEdit && existingWine) {
+      setFormData({
+        name: existingWine.name,
+        country_code: existingWine.country_code,
+        vintage: existingWine.vintage,
+        price: existingWine.price,
+        quantity: existingWine.quantity
+      });
+    }
+  }, [isEdit, existingWine]);
+
   // 로딩 상태는 React Query에서 관리
-  const loading = createWineMutation.isPending || updateWineMutation.isPending;
+  const loading = createWineMutation.isPending || updateWineMutation.isPending || loadingWine;
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // 폼 데이터 변경 핸들러
@@ -135,18 +149,41 @@ export default function WineForm() {
     navigate('/');
   };
 
+  // 수정 모드에서 기존 데이터 로딩 중일 때
+  if (isEdit && loadingWine) {
+    return (
+      <Box sx={{ 
+        maxWidth: { xs: '100%', sm: 800 }, 
+        mx: 'auto', 
+        p: { xs: 1, sm: 3, md: 4 },
+        minHeight: '100vh',
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <CircularProgress size={60} />
+          <Typography variant="h6" sx={{ ml: 2 }}>
+            와인 정보를 불러오는 중...
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ 
-      maxWidth: 800, 
+      maxWidth: { xs: '100%', sm: 800 }, 
       mx: 'auto', 
-      p: { xs: 2, sm: 3, md: 4 },
+      p: { xs: 1, sm: 3, md: 4 },
       minHeight: '100vh',
       width: '100%'
     }}>
       <Paper 
         elevation={1}
         sx={{ 
-          p: { xs: 3, sm: 4, md: 5 },
+          p: { xs: 2, sm: 4, md: 5 },
           borderRadius: 2,
           border: 1,
           borderColor: 'divider'
@@ -163,7 +200,7 @@ export default function WineForm() {
             color: 'primary.main',
             mb: 1
           }}>
-            {isEdit ? '✏️ 와인 정보 수정' : '🍷 새 와인 등록'}
+            {isEdit ? '와인 정보 수정' : '새 와인 등록'}
           </Typography>
           <Typography variant="body1" sx={{ 
             color: 'text.secondary'
@@ -181,7 +218,7 @@ export default function WineForm() {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="🍷 와인 이름"
+                label="와인 이름"
                 value={formData.name}
                 onChange={handleChange('name')}
                 error={Boolean(errors.name)}
@@ -201,7 +238,7 @@ export default function WineForm() {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="🌍 국가 코드"
+                label="국가 코드"
                 value={formData.country_code}
                 onChange={handleChange('country_code')}
                 error={Boolean(errors.country_code)}
@@ -220,7 +257,7 @@ export default function WineForm() {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="📅 연도"
+                label="연도"
                 type="number"
                 value={formData.vintage}
                 onChange={handleChange('vintage')}
@@ -242,7 +279,7 @@ export default function WineForm() {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="💰 가격 (USD)"
+                label="가격 (USD)"
                 type="number"
                 value={formData.price}
                 onChange={handleChange('price')}
@@ -263,7 +300,7 @@ export default function WineForm() {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="📦 재고 수량"
+                label="재고 수량"
                 type="number"
                 value={formData.quantity}
                 onChange={handleChange('quantity')}
@@ -301,7 +338,7 @@ export default function WineForm() {
               onClick={handleCancel}
               disabled={loading}
               sx={{ 
-                minWidth: 140,
+                minWidth: 160,
                 py: 2,
                 px: 4
               }}
@@ -319,7 +356,7 @@ export default function WineForm() {
                 px: 4
               }}
             >
-              {loading ? '처리 중...' : (isEdit ? '✏️ 수정하기' : '🍷 등록하기')}
+              {loading ? '처리 중...' : (isEdit ? '수정' : '등록')}
             </Button>
           </Box>
         </Box>
