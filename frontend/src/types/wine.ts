@@ -7,15 +7,17 @@
 export interface Wine {
   id: string;
   name: string;
-  countryCode: string;
+  country_code: string;  // 데이터베이스 컬럼명과 일치
   vintage: number;
   price: number;
   quantity: number;
+  created_at: string;     // 데이터베이스 컬럼명과 일치
+  updated_at: string;     // 데이터베이스 컬럼명과 일치
 }
 
 export interface CreateWineRequest {
   name: string;
-  countryCode: string;
+  country_code: string;  // 데이터베이스 컬럼명과 일치
   vintage: number;
   price: number;
   quantity: number;
@@ -23,7 +25,7 @@ export interface CreateWineRequest {
 
 export interface UpdateWineRequest {
   name?: string;
-  countryCode?: string;
+  country_code?: string;  // 데이터베이스 컬럼명과 일치
   vintage?: number;
   price?: number;
   quantity?: number;

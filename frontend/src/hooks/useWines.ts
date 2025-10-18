@@ -112,7 +112,10 @@ export function useCreateWine() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (wineData: CreateWineRequest) => WineService.createWine(wineData),
+    mutationFn: (wineData: CreateWineRequest) => {
+      // 데이터베이스 스키마에 맞게 수정 (created_at, updated_at, isActive 필드 제거)
+      return WineService.createWine(wineData);
+    },
     onSuccess: () => {
       // 와인 목록 캐시 무효화
       queryClient.invalidateQueries({ queryKey: WINE_QUERY_KEYS.lists() });
