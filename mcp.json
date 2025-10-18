@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--access-token",
+        "${SUPABASE_ACCESS_TOKEN}",
+        "--project-ref",
+        "${SUPABASE_PROJECT_REF}",
+        "--read-only"
+      ]
+    },
+    "shadcn": { "url": "https://ui.shadcn.com/api/mcp" },
+    "mui": { "url": "https://mcp.mui.com" },
+    "tailwind": { "command": "npx", "args": ["-y", "tailwindcss-mcp-server"] },
+    "chakra": { "command": "npx", "args": ["-y", "@chakra-ui/react-mcp"] },
+  }
+}
