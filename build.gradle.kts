@@ -1,58 +1,35 @@
+// 루트 프로젝트 빌드 설정
+// 멀티모듈 프로젝트의 공통 설정을 정의합니다.
+
 plugins {
-    kotlin("jvm") version "2.0.20"
-    application
+    kotlin("jvm") version "2.0.20" apply false
+    kotlin("plugin.serialization") version "2.0.20" apply false
 }
 
 group = "com.august"
 version = "1.0-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-}
-
-application {
-    mainClass.set("com.august.MainKt")
-}
-
-dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
-    implementation("io.insert-koin:koin-core:3.5.3")
-    
-    // Database
-    implementation("org.jetbrains.exposed:exposed-core:0.48.0")
-    implementation("org.jetbrains.exposed:exposed-dao:0.48.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.48.0")
-    implementation("org.jetbrains.exposed:exposed-java-time:0.48.0")
-    implementation("org.xerial:sqlite-jdbc:3.45.1.0")
-    
-    // Logging
-    implementation("org.slf4j:slf4j-api:2.0.12")
-    implementation("ch.qos.logback:logback-classic:1.4.14")
-    
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
-    testImplementation("io.mockk:mockk:1.13.16")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
-    testImplementation("io.insert-koin:koin-test:3.5.3") {
-        exclude(group = "org.jetbrains.kotlin", module = "kotlin-test-junit")
+// 모든 서브프로젝트에 공통 설정 적용
+subprojects {
+    repositories {
+        mavenCentral()
     }
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-tasks.jar {
-    manifest {
-        attributes["Main-Class"] = "com.august.MainKt"
+    
+    // JVM 툴체인 설정으로 호환성 문제 해결
+    plugins.withType<org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper> {
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+            kotlinOptions {
+                jvmTarget = "17"
+            }
+        }
     }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
-}
-
-tasks.named<JavaExec>("run") {
-    standardInput = System.`in`
-}
-
-kotlin {
-    jvmToolchain(17)
+    
+    // Java 컴파일러도 JVM 17로 설정
+    plugins.withType<JavaPlugin> {
+        configure<JavaPluginExtension> {
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(17))
+            }
+        }
+    }
 }
