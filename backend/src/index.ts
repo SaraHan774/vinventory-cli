@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { checkSupabaseConnection, logEnvironmentInfo } from './config/supabase';
 import wineRoutes from './routes/wineRoutes';
+import wineNoteRoutes from './routes/wineNoteRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 // 환경 변수 로드
@@ -32,12 +33,12 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
-// CORS 설정 (Context7 권장)
+// CORS 설정 (개발 환경용 - 모든 origin 허용)
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5174',
+  origin: true, // 모든 origin 허용
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-client-type', 'x-client-version', 'x-user-agent']
 }));
 
 // 로깅 미들웨어 (Context7 권장)
@@ -90,6 +91,7 @@ app.get('/api', (_req, res) => {
 
 // API 라우트 설정
 app.use('/api/v1/wines', wineRoutes);
+app.use('/api/v1/wines', wineNoteRoutes);
 
 // 404 핸들러 (Context7 권장 순서)
 app.use(notFoundHandler);

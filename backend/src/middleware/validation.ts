@@ -113,3 +113,43 @@ export const wineSearchSchema = z.object({
 export const lowStockQuerySchema = z.object({
   threshold: z.string().optional().transform(val => val ? parseInt(val) : 5).pipe(z.number().int().positive())
 }).optional();
+
+/**
+ * Wine note validation schema
+ */
+export const wineNoteSchema = z.object({
+  title: z.string().min(1, '제목은 필수입니다.').max(255, '제목은 255자를 초과할 수 없습니다.'),
+  content: z.string().max(10000, '내용은 10000자를 초과할 수 없습니다.').nullable().optional(),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, '올바른 HEX 색상 코드를 입력해주세요.').optional(),
+  is_pinned: z.boolean().optional()
+});
+
+/**
+ * Wine note update validation schema (모든 필드가 선택적)
+ */
+export const wineNoteUpdateSchema = z.object({
+  title: z.string().min(1, '제목은 필수입니다.').max(255, '제목은 255자를 초과할 수 없습니다.').optional(),
+  content: z.string().max(10000, '내용은 10000자를 초과할 수 없습니다.').nullable().optional(),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, '올바른 HEX 색상 코드를 입력해주세요.').optional(),
+  is_pinned: z.boolean().optional()
+});
+
+/**
+ * Wine note pin toggle validation schema
+ */
+export const wineNotePinSchema = z.object({
+  is_pinned: z.boolean()
+});
+
+/**
+ * Wine note color change validation schema
+ */
+export const wineNoteColorSchema = z.object({
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, '올바른 HEX 색상 코드를 입력해주세요.')
+});
+
+// 와인 노트 검증 미들웨어
+export const validateWineNote = validate(wineNoteSchema, 'body');
+export const validateWineNoteUpdate = validate(wineNoteUpdateSchema, 'body');
+export const validateWineNotePin = validate(wineNotePinSchema, 'body');
+export const validateWineNoteColor = validate(wineNoteColorSchema, 'body');
