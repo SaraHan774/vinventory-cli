@@ -1,0 +1,162 @@
+[
+  {
+    "title": "🐛 WineDetail 컴포넌트의 삭제 기능 완성",
+    "body": "## 📋 설명\n`frontend/src/components/WineDetail.tsx:73`에 \"TODO: 실제 API 호출 구현\" 주석이 있습니다.\n\n## 🎯 목표\n- 삭제 버튼 클릭 시 백엔드 API 호출 구현\n- 삭제 성공 후 목록 페이지로 리다이렉션\n- 에러 처리 및 사용자 피드백 추가\n\n## 📁 관련 파일\n- `frontend/src/components/WineDetail.tsx:73`\n\n## ✅ 완료 조건\n- [ ] DELETE API 호출 구현\n- [ ] 성공 시 WineList 페이지로 이동\n- [ ] 에러 처리 및 Snackbar 알림 추가\n- [ ] 삭제 확인 다이얼로그 추가",
+    "labels": ["bug", "frontend", "priority: high"]
+  },
+  {
+    "title": "✨ 페이지네이션 UI 컴포넌트 추가",
+    "body": "## 📋 설명\n백엔드에서 페이지네이션을 지원하지만 프론트엔드에 페이지네이션 컨트롤이 없습니다.\n\n## 🎯 목표\n- WineList 컴포넌트에 페이지네이션 UI 추가\n- Material-UI Pagination 컴포넌트 사용\n- 페이지 크기 선택 기능 추가 (10, 20, 50, 100)\n\n## 📁 관련 파일\n- `frontend/src/components/WineList.tsx`\n- `frontend/src/hooks/useWines.ts`\n\n## ✅ 완료 조건\n- [ ] Pagination 컴포넌트 통합\n- [ ] 페이지 번호 변경 시 데이터 로드\n- [ ] 페이지 크기 선택 드롭다운\n- [ ] URL 쿼리 파라미터에 페이지 정보 반영",
+    "labels": ["enhancement", "frontend", "ui"]
+  },
+  {
+    "title": "✨ 와인 이미지 업로드 기능 추가",
+    "body": "## 📋 설명\n와인에 이미지를 첨부할 수 있는 기능이 필요합니다.\n\n## 🎯 목표\n- Supabase Storage를 사용한 이미지 업로드\n- 이미지 미리보기 기능\n- 이미지 크기 제한 및 유효성 검증\n\n## 📁 관련 파일\n- `backend/src/models/wine.model.ts` - image_url 필드 추가\n- `frontend/src/components/WineForm.tsx` - 업로드 UI\n- `supabase/migrations/` - 새로운 마이그레이션 생성\n\n## ✅ 완료 조건\n- [ ] wines 테이블에 image_url 컬럼 추가\n- [ ] Supabase Storage 버킷 설정\n- [ ] 이미지 업로드 API 엔드포인트\n- [ ] 프론트엔드 이미지 업로드 UI\n- [ ] 이미지 미리보기 및 삭제 기능",
+    "labels": ["enhancement", "feature", "fullstack"]
+  },
+  {
+    "title": "✨ 대시보드 페이지 구현",
+    "body": "## 📋 설명\n재고 현황을 한눈에 볼 수 있는 대시보드가 필요합니다.\n\n## 🎯 목표\n- 통계 카드 (총 와인 수, 총 재고 가치, 저재고 와인 수)\n- 국가별 분포 차트\n- 가격대별 분포 차트\n- 최근 추가된 와인 목록\n\n## 📁 관련 파일\n- `frontend/src/pages/Dashboard.tsx` (신규)\n- `backend/src/routes/statistics.routes.ts` (신규)\n- `backend/src/services/statistics.service.ts` (신규)\n\n## ✅ 완료 조건\n- [ ] 통계 API 엔드포인트 구현\n- [ ] Dashboard 컴포넌트 생성\n- [ ] Chart 라이브러리 통합 (recharts 추천)\n- [ ] 반응형 레이아웃 적용",
+    "labels": ["enhancement", "feature", "fullstack", "ui"]
+  },
+  {
+    "title": "✨ 고급 필터링 기능 개선",
+    "body": "## 📋 설명\n현재 기본적인 필터링만 지원하며, 다중 조건 필터링이 필요합니다.\n\n## 🎯 목표\n- 다중 국가 선택 필터\n- 가격 범위 슬라이더\n- 빈티지 범위 선택\n- 재고 수량 범위 필터\n- 필터 프리셋 저장 기능\n\n## 📁 관련 파일\n- `frontend/src/components/WineList.tsx`\n- `frontend/src/components/FilterPanel.tsx` (신규)\n- `backend/src/services/wine.service.ts`\n\n## ✅ 완료 조건\n- [ ] FilterPanel 컴포넌트 생성\n- [ ] 다중 조건 필터 로직 구현\n- [ ] 필터 상태 URL 동기화\n- [ ] 필터 리셋 버튼\n- [ ] 저장된 필터 프리셋 (로컬스토리지)",
+    "labels": ["enhancement", "feature", "frontend"]
+  },
+  {
+    "title": "✨ Excel/CSV 내보내기 기능",
+    "body": "## 📋 설명\n와인 재고 데이터를 Excel 또는 CSV 파일로 내보내는 기능이 필요합니다.\n\n## 🎯 목표\n- CSV 형식 다운로드\n- Excel (XLSX) 형식 다운로드\n- 현재 필터/정렬 조건 반영\n- 사용자 정의 컬럼 선택\n\n## 📁 관련 파일\n- `frontend/src/components/WineList.tsx`\n- `frontend/src/utils/export.ts` (신규)\n\n## 💡 추천 라이브러리\n- `xlsx` - Excel 파일 생성\n- `papaparse` - CSV 생성\n\n## ✅ 완료 조건\n- [ ] CSV 내보내기 버튼 추가\n- [ ] Excel 내보내기 버튼 추가\n- [ ] 내보내기 옵션 다이얼로그\n- [ ] 파일명에 타임스탬프 포함",
+    "labels": ["enhancement", "feature", "frontend"]
+  },
+  {
+    "title": "🧪 백엔드 API 테스트 작성",
+    "body": "## 📋 설명\nExpress API 엔드포인트에 대한 통합 테스트가 없습니다.\n\n## 🎯 목표\n- Jest + Supertest를 사용한 API 테스트\n- 모든 CRUD 엔드포인트 테스트\n- 에러 케이스 테스트\n- 테스트 커버리지 80% 이상\n\n## 📁 관련 파일\n- `backend/tests/` (신규 디렉토리)\n- `backend/tests/wines.test.ts` (신규)\n- `backend/jest.config.js` (신규)\n\n## ✅ 완료 조건\n- [ ] Jest 및 Supertest 설정\n- [ ] GET /api/v1/wines 테스트\n- [ ] POST /api/v1/wines 테스트\n- [ ] PUT /api/v1/wines/:id 테스트\n- [ ] DELETE /api/v1/wines/:id 테스트\n- [ ] 에러 케이스 테스트\n- [ ] CI/CD에 테스트 통합",
+    "labels": ["testing", "backend", "priority: high"]
+  },
+  {
+    "title": "🧪 프론트엔드 컴포넌트 테스트 작성",
+    "body": "## 📋 설명\nReact 컴포넌트에 대한 단위 테스트가 없습니다.\n\n## 🎯 목표\n- React Testing Library 사용\n- 주요 컴포넌트 테스트 작성\n- 사용자 인터랙션 테스트\n- 테스트 커버리지 70% 이상\n\n## 📁 관련 파일\n- `frontend/src/components/__tests__/` (신규)\n- `frontend/vitest.config.ts` (신규)\n\n## ✅ 완료 조건\n- [ ] Vitest 및 Testing Library 설정\n- [ ] WineList 컴포넌트 테스트\n- [ ] WineForm 컴포넌트 테스트\n- [ ] WineDetail 컴포넌트 테스트\n- [ ] 커스텀 훅 테스트\n- [ ] CI/CD에 테스트 통합",
+    "labels": ["testing", "frontend", "priority: high"]
+  },
+  {
+    "title": "🧪 E2E 테스트 설정 및 작성",
+    "body": "## 📋 설명\n전체 사용자 플로우를 테스트하는 E2E 테스트가 필요합니다.\n\n## 🎯 목표\n- Playwright 또는 Cypress 설정\n- 주요 사용자 시나리오 테스트\n- CI/CD 통합\n\n## 📁 관련 파일\n- `e2e/` (신규 디렉토리)\n- `playwright.config.ts` 또는 `cypress.config.ts` (신규)\n\n## 🧪 테스트 시나리오\n1. 와인 목록 조회\n2. 와인 추가\n3. 와인 수정\n4. 와인 삭제\n5. 검색 및 필터링\n\n## ✅ 완료 조건\n- [ ] E2E 프레임워크 설정\n- [ ] 기본 사용자 플로우 테스트 작성\n- [ ] 스크린샷 및 비디오 녹화 설정\n- [ ] CI/CD 통합",
+    "labels": ["testing", "e2e"]
+  },
+  {
+    "title": "📚 OpenAPI/Swagger API 문서 작성",
+    "body": "## 📋 설명\nAPI 엔드포인트에 대한 공식 문서가 없습니다.\n\n## 🎯 목표\n- OpenAPI 3.0 스펙 작성\n- Swagger UI 통합\n- 모든 엔드포인트 문서화\n- 요청/응답 예제 추가\n\n## 📁 관련 파일\n- `backend/src/swagger.ts` (신규)\n- `backend/openapi.yaml` (신규)\n\n## 💡 추천 라이브러리\n- `swagger-jsdoc`\n- `swagger-ui-express`\n\n## ✅ 완료 조건\n- [ ] Swagger 라이브러리 설치\n- [ ] OpenAPI 스펙 작성\n- [ ] Swagger UI 엔드포인트 추가 (/api-docs)\n- [ ] 모든 엔드포인트 문서화\n- [ ] 인증 스키마 문서화",
+    "labels": ["documentation", "backend", "priority: medium"]
+  },
+  {
+    "title": "📚 README 개선 및 한글 문서 작성",
+    "body": "## 📋 설명\n프로젝트 README가 부족하며 설치/실행 가이드가 필요합니다.\n\n## 🎯 목표\n- 상세한 설치 가이드\n- 개발 환경 설정 방법\n- API 사용 예제\n- 프로젝트 구조 설명\n- 기여 가이드\n\n## 📁 관련 파일\n- `README.md`\n- `CONTRIBUTING.md` (신규)\n- `docs/` (신규 디렉토리)\n\n## ✅ 완료 조건\n- [ ] 프로젝트 개요 섹션\n- [ ] 기술 스택 설명\n- [ ] 로컬 개발 환경 설정 가이드\n- [ ] Supabase 설정 방법\n- [ ] Docker 실행 가이드\n- [ ] 스크린샷 추가\n- [ ] 라이선스 정보",
+    "labels": ["documentation", "priority: medium"]
+  },
+  {
+    "title": "📚 Storybook 설정 및 컴포넌트 문서화",
+    "body": "## 📋 설명\nReact 컴포넌트에 대한 시각적 문서가 필요합니다.\n\n## 🎯 목표\n- Storybook 7.x 설정\n- 주요 컴포넌트 스토리 작성\n- 다양한 상태 및 프롭 조합 문서화\n\n## 📁 관련 파일\n- `.storybook/` (신규 디렉토리)\n- `frontend/src/components/**/*.stories.tsx` (신규)\n\n## ✅ 완료 조건\n- [ ] Storybook 설치 및 설정\n- [ ] WineList 컴포넌트 스토리\n- [ ] WineForm 컴포넌트 스토리\n- [ ] WineDetail 컴포넌트 스토리\n- [ ] 테마 및 스타일 통합\n- [ ] Storybook 배포 (Chromatic 또는 GitHub Pages)",
+    "labels": ["documentation", "frontend", "ui"]
+  },
+  {
+    "title": "🔧 Kotlin 레거시 코드 제거 및 정리",
+    "body": "## 📋 설명\nTypeScript로 마이그레이션이 완료되었으나 Kotlin 코드가 여전히 남아있습니다.\n\n## 🎯 목표\n- 사용하지 않는 Kotlin 코드 식별\n- 안전하게 제거 또는 아카이빙\n- 빌드 설정 정리\n\n## 📁 관련 파일\n- `src/` (Kotlin 소스)\n- `cli/`\n- `shared/`\n- `build.gradle.kts`\n\n## ⚠️ 주의사항\n- 혹시 사용되는 코드가 있는지 확인\n- 제거 전 별도 브랜치에 백업\n\n## ✅ 완료 조건\n- [ ] 사용 중인 Kotlin 코드 확인\n- [ ] 미사용 코드 목록 작성\n- [ ] 레거시 코드 제거 또는 legacy/ 폴더로 이동\n- [ ] Gradle 빌드 파일 정리\n- [ ] 의존성 정리",
+    "labels": ["refactor", "cleanup", "priority: low"]
+  },
+  {
+    "title": "🔧 타입 안정성 개선 및 TypeScript strict 모드 활성화",
+    "body": "## 📋 설명\nTypeScript의 엄격한 타입 체크를 활성화하여 코드 품질을 높여야 합니다.\n\n## 🎯 목표\n- tsconfig.json에서 strict 모드 활성화\n- any 타입 제거\n- 타입 가드 추가\n- null/undefined 안전성 개선\n\n## 📁 관련 파일\n- `frontend/tsconfig.json`\n- `backend/tsconfig.json`\n- 모든 `.ts` 파일\n\n## ✅ 완료 조건\n- [ ] strict: true 설정\n- [ ] noImplicitAny 에러 수정\n- [ ] strictNullChecks 에러 수정\n- [ ] any 타입 명시적 타입으로 변경\n- [ ] 타입 정의 파일 개선",
+    "labels": ["refactor", "typescript", "priority: medium"]
+  },
+  {
+    "title": "🔧 에러 처리 일관성 개선",
+    "body": "## 📋 설명\n프론트엔드와 백엔드의 에러 처리가 일관성이 없습니다.\n\n## 🎯 목표\n- 통일된 에러 응답 형식\n- 커스텀 에러 클래스 정의\n- 에러 로깅 개선\n- 사용자 친화적인 에러 메시지\n\n## 📁 관련 파일\n- `backend/src/middleware/errorHandler.ts` (신규)\n- `backend/src/errors/` (신규)\n- `frontend/src/utils/errorHandler.ts` (신규)\n\n## ✅ 완료 조건\n- [ ] 커스텀 에러 클래스 정의\n- [ ] 에러 핸들링 미들웨어\n- [ ] 에러 응답 형식 표준화\n- [ ] 프론트엔드 에러 처리 유틸리티\n- [ ] 에러 로깅 (Winston 또는 Pino)\n- [ ] 사용자 에러 메시지 개선",
+    "labels": ["refactor", "fullstack", "priority: high"]
+  },
+  {
+    "title": "🔧 컴포넌트 재사용성 향상",
+    "body": "## 📋 설명\n중복된 UI 패턴을 공통 컴포넌트로 추출해야 합니다.\n\n## 🎯 목표\n- 공통 UI 컴포넌트 라이브러리 구축\n- 중복 코드 제거\n- Compound Component 패턴 적용\n\n## 📁 관련 파일\n- `frontend/src/components/common/` (신규)\n- 기존 컴포넌트 리팩토링\n\n## 💡 추출할 컴포넌트\n- ConfirmDialog\n- DataTable\n- SearchBar\n- FilterChips\n- EmptyState\n- LoadingState\n\n## ✅ 완료 조건\n- [ ] 공통 컴포넌트 식별\n- [ ] common/ 폴더에 재사용 가능한 컴포넌트 생성\n- [ ] 기존 컴포넌트에 적용\n- [ ] PropTypes 또는 TypeScript 인터페이스 정의\n- [ ] 컴포넌트 문서 작성",
+    "labels": ["refactor", "frontend", "ui"]
+  },
+  {
+    "title": "🚀 React Query 캐싱 전략 최적화",
+    "body": "## 📋 설명\n현재 기본 캐싱 설정을 사용하고 있으며, 더 나은 캐싱 전략이 필요합니다.\n\n## 🎯 목표\n- 쿼리별 적절한 staleTime 설정\n- Optimistic updates 구현\n- Prefetching 전략 수립\n- 캐시 무효화 로직 개선\n\n## 📁 관련 파일\n- `frontend/src/hooks/useWines.ts`\n- `frontend/src/App.tsx`\n\n## ✅ 완료 조건\n- [ ] 쿼리별 캐싱 설정 조정\n- [ ] Optimistic updates 구현 (삭제, 수정)\n- [ ] Prefetching 추가 (상세 페이지)\n- [ ] 에러 재시도 로직 개선\n- [ ] 캐시 무효화 전략 문서화",
+    "labels": ["performance", "frontend", "priority: medium"]
+  },
+  {
+    "title": "🚀 불필요한 리렌더링 방지 (useMemo, useCallback)",
+    "body": "## 📋 설명\nReact DevTools Profiler로 성능 병목을 찾고 최적화가 필요합니다.\n\n## 🎯 목표\n- React DevTools Profiler 분석\n- 불필요한 리렌더링 식별\n- useMemo, useCallback 적용\n- React.memo로 컴포넌트 메모이제이션\n\n## 📁 관련 파일\n- `frontend/src/components/WineList.tsx`\n- `frontend/src/components/WineForm.tsx`\n\n## ✅ 완료 조건\n- [ ] Profiler로 성능 측정\n- [ ] 불필요한 리렌더링 식별\n- [ ] 비싼 계산에 useMemo 적용\n- [ ] 콜백 함수에 useCallback 적용\n- [ ] 자식 컴포넌트 React.memo 적용\n- [ ] 최적화 전후 성능 비교",
+    "labels": ["performance", "frontend"]
+  },
+  {
+    "title": "🚀 번들 크기 최적화 및 코드 스플리팅",
+    "body": "## 📋 설명\n프론트엔드 번들 크기가 크며 초기 로딩 시간 개선이 필요합니다.\n\n## 🎯 목표\n- 번들 분석\n- 코드 스플리팅 적용\n- 트리 쉐이킹 최적화\n- 라이브러리 최적화\n\n## 📁 관련 파일\n- `frontend/vite.config.ts`\n- 모든 import 문\n\n## 💡 분석 도구\n- `rollup-plugin-visualizer`\n- Vite Bundle Analyzer\n\n## ✅ 완료 조건\n- [ ] 번들 분석 및 리포트 생성\n- [ ] React.lazy와 Suspense로 라우트 스플리팅\n- [ ] 큰 라이브러리 동적 임포트\n- [ ] Material-UI 트리 쉐이킹 확인\n- [ ] 번들 크기 30% 이상 감소",
+    "labels": ["performance", "frontend", "priority: medium"]
+  },
+  {
+    "title": "🚀 데이터베이스 쿼리 최적화",
+    "body": "## 📋 설명\nSupabase 쿼리 성능을 분석하고 최적화가 필요합니다.\n\n## 🎯 목표\n- 느린 쿼리 식별\n- 적절한 인덱스 추가\n- N+1 쿼리 문제 해결\n- 쿼리 실행 계획 분석\n\n## 📁 관련 파일\n- `backend/src/services/wine.service.ts`\n- `supabase/migrations/`\n\n## ✅ 완료 조건\n- [ ] Supabase 쿼리 성능 분석\n- [ ] 느린 쿼리 식별 및 최적화\n- [ ] 필요한 인덱스 추가\n- [ ] 쿼리 실행 계획 확인\n- [ ] 페이지네이션 성능 개선",
+    "labels": ["performance", "backend", "database"]
+  },
+  {
+    "title": "🚀 이미지 지연 로딩 및 최적화",
+    "body": "## 📋 설명\n와인 이미지가 추가되면 지연 로딩이 필요합니다.\n\n## 🎯 목표\n- Lazy loading 구현\n- 이미지 최적화 (WebP 변환)\n- 썸네일 생성\n- Progressive loading\n\n## 📁 관련 파일\n- `frontend/src/components/WineList.tsx`\n- `frontend/src/components/WineDetail.tsx`\n\n## 💡 추천 라이브러리\n- `react-lazy-load-image-component`\n- Intersection Observer API\n\n## ✅ 완료 조건\n- [ ] Lazy loading 구현\n- [ ] Placeholder/Skeleton 추가\n- [ ] 이미지 최적화 파이프라인\n- [ ] 썸네일 자동 생성\n- [ ] WebP 형식 지원",
+    "labels": ["performance", "frontend", "depends-on: image-upload"]
+  },
+  {
+    "title": "🌐 다국어 지원 (i18n) 구현",
+    "body": "## 📋 설명\n현재 한국어로만 되어 있으며 영어 지원이 필요합니다.\n\n## 🎯 목표\n- react-i18next 설정\n- 한국어/영어 번역 파일\n- 언어 전환 UI\n- 날짜/통화 형식 현지화\n\n## 📁 관련 파일\n- `frontend/src/i18n/` (신규)\n- `frontend/src/locales/` (신규)\n- 모든 하드코딩된 텍스트\n\n## ✅ 완료 조건\n- [ ] react-i18next 설치 및 설정\n- [ ] 한국어 번역 파일 (ko.json)\n- [ ] 영어 번역 파일 (en.json)\n- [ ] 언어 전환 버튼 추가\n- [ ] 모든 UI 텍스트 번역\n- [ ] 날짜/숫자 형식 현지화\n- [ ] 언어 설정 저장 (로컬스토리지)",
+    "labels": ["enhancement", "i18n", "frontend"]
+  },
+  {
+    "title": "🔒 입력 검증 강화 및 보안 개선",
+    "body": "## 📋 설명\n사용자 입력에 대한 검증을 강화하고 보안을 개선해야 합니다.\n\n## 🎯 목표\n- Zod 스키마 검증 강화\n- XSS 방어\n- SQL Injection 방어\n- Rate limiting\n\n## 📁 관련 파일\n- `backend/src/validators/` (신규)\n- `backend/src/middleware/rateLimiter.ts` (신규)\n- `backend/src/middleware/sanitizer.ts` (신규)\n\n## ✅ 완료 조건\n- [ ] 모든 입력에 Zod 검증 적용\n- [ ] XSS 방어 미들웨어 추가\n- [ ] Rate limiting 구현 (express-rate-limit)\n- [ ] CSRF 토큰 (csurf)\n- [ ] 환경 변수 검증\n- [ ] 보안 헤더 확인 (Helmet 설정)",
+    "labels": ["security", "backend", "priority: high"]
+  },
+  {
+    "title": "🔒 사용자 인증 및 권한 관리 구현",
+    "body": "## 📋 설명\n현재 공개 API이며 사용자 인증이 필요합니다.\n\n## 🎯 목표\n- Supabase Auth 통합\n- JWT 토큰 기반 인증\n- 로그인/회원가입 UI\n- Protected routes\n\n## 📁 관련 파일\n- `backend/src/middleware/auth.ts` (신규)\n- `frontend/src/contexts/AuthContext.tsx` (신규)\n- `frontend/src/pages/Login.tsx` (신규)\n\n## ✅ 완료 조건\n- [ ] Supabase Auth 설정\n- [ ] 회원가입 페이지\n- [ ] 로그인 페이지\n- [ ] AuthContext 및 useAuth 훅\n- [ ] Protected routes (PrivateRoute)\n- [ ] 인증 미들웨어 (백엔드)\n- [ ] 로그아웃 기능\n- [ ] 비밀번호 재설정",
+    "labels": ["security", "authentication", "fullstack", "priority: high"]
+  },
+  {
+    "title": "📦 Docker 설정 개선 및 프로덕션 최적화",
+    "body": "## 📋 설명\nDocker 설정을 개선하고 프로덕션 배포를 위한 최적화가 필요합니다.\n\n## 🎯 목표\n- 멀티 스테이지 빌드\n- 이미지 크기 최적화\n- 환경별 설정 분리\n- Health check 추가\n\n## 📁 관련 파일\n- `Dockerfile` (프론트엔드/백엔드 각각)\n- `docker-compose.yml`\n- `docker-compose.prod.yml` (신규)\n\n## ✅ 완료 조건\n- [ ] 멀티 스테이지 Dockerfile\n- [ ] Alpine 베이스 이미지 사용\n- [ ] .dockerignore 최적화\n- [ ] Health check 추가\n- [ ] 프로덕션용 docker-compose 파일\n- [ ] 환경 변수 관리 개선",
+    "labels": ["devops", "docker", "priority: medium"]
+  },
+  {
+    "title": "📦 CI/CD 파이프라인 최적화",
+    "body": "## 📋 설명\nGitHub Actions 워크플로우를 개선하고 배포 자동화가 필요합니다.\n\n## 🎯 목표\n- 린트 및 테스트 자동화\n- 빌드 캐싱\n- 자동 배포\n- 알림 통합\n\n## 📁 관련 파일\n- `.github/workflows/ci.yml` (신규)\n- `.github/workflows/deploy.yml` (신규)\n\n## ✅ 완료 조건\n- [ ] 린트 체크 워크플로우\n- [ ] 테스트 실행 워크플로우\n- [ ] 빌드 캐싱 설정\n- [ ] 자동 배포 워크플로우\n- [ ] PR 체크 자동화\n- [ ] 배포 알림 (Slack/Discord)",
+    "labels": ["devops", "ci-cd", "priority: medium"]
+  },
+  {
+    "title": "📦 모니터링 및 로깅 시스템 구축",
+    "body": "## 📋 설명\n프로덕션 환경의 모니터링과 로깅 시스템이 필요합니다.\n\n## 🎯 목표\n- 구조화된 로깅\n- 에러 추적\n- 성능 모니터링\n- 알림 시스템\n\n## 📁 관련 파일\n- `backend/src/utils/logger.ts` (신규)\n- `backend/src/middleware/requestLogger.ts` (신규)\n\n## 💡 추천 도구\n- **로깅**: Winston 또는 Pino\n- **에러 추적**: Sentry\n- **모니터링**: Prometheus + Grafana\n- **APM**: New Relic 또는 DataDog\n\n## ✅ 완료 조건\n- [ ] 구조화된 로깅 (Winston/Pino)\n- [ ] Sentry 통합 (에러 추적)\n- [ ] 요청 로깅 미들웨어\n- [ ] 성능 메트릭 수집\n- [ ] 로그 레벨 설정\n- [ ] 프로덕션 알림 설정",
+    "labels": ["devops", "monitoring", "priority: medium"]
+  },
+  {
+    "title": "🎨 다크 모드 지원",
+    "body": "## 📋 설명\n다크 모드 테마를 추가하여 사용자 경험을 개선해야 합니다.\n\n## 🎯 목표\n- 다크 모드 테마 정의\n- 테마 전환 버튼\n- 시스템 설정 감지\n- 테마 설정 저장\n\n## 📁 관련 파일\n- `frontend/src/theme/wineTheme.ts`\n- `frontend/src/contexts/ThemeContext.tsx` (신규)\n\n## ✅ 완료 조건\n- [ ] 다크 모드 테마 정의\n- [ ] ThemeProvider 설정\n- [ ] 테마 전환 토글 버튼\n- [ ] prefers-color-scheme 감지\n- [ ] 테마 설정 로컬스토리지 저장\n- [ ] 모든 컴포넌트 다크 모드 대응",
+    "labels": ["enhancement", "ui", "frontend"]
+  },
+  {
+    "title": "🎨 모바일 반응형 개선",
+    "body": "## 📋 설명\n모바일 환경에서의 사용성을 더욱 개선해야 합니다.\n\n## 🎯 목표\n- 터치 제스처 지원\n- 모바일 네비게이션 개선\n- 작은 화면 최적화\n- PWA 기능 추가\n\n## 📁 관련 파일\n- `frontend/src/components/` (모든 컴포넌트)\n- `frontend/public/manifest.json` (신규)\n\n## ✅ 완료 조건\n- [ ] 모바일 뷰포트 테스트\n- [ ] 터치 제스처 (스와이프 등)\n- [ ] 햄버거 메뉴 개선\n- [ ] 폼 입력 모바일 최적화\n- [ ] PWA manifest 추가\n- [ ] 오프라인 지원",
+    "labels": ["enhancement", "ui", "mobile", "frontend"]
+  },
+  {
+    "title": "🎨 접근성 (a11y) 개선",
+    "body": "## 📋 설명\nWCAG 2.1 AA 수준의 접근성을 준수해야 합니다.\n\n## 🎯 목표\n- 키보드 네비게이션\n- 스크린 리더 지원\n- 색상 대비 개선\n- ARIA 속성 추가\n\n## 📁 관련 파일\n- 모든 프론트엔드 컴포넌트\n\n## 💡 도구\n- axe DevTools\n- Lighthouse 접근성 감사\n- eslint-plugin-jsx-a11y\n\n## ✅ 완료 조건\n- [ ] axe DevTools 감사 통과\n- [ ] 키보드만으로 전체 네비게이션 가능\n- [ ] 적절한 ARIA 레이블\n- [ ] 색상 대비 4.5:1 이상\n- [ ] 포커스 인디케이터 명확\n- [ ] 스크린 리더 테스트",
+    "labels": ["enhancement", "accessibility", "frontend", "priority: medium"]
+  },
+  {
+    "title": "🎨 로딩 상태 스켈레톤 UI 추가",
+    "body": "## 📋 설명\n데이터 로딩 중 사용자 경험을 개선하기 위한 스켈레톤 UI가 필요합니다.\n\n## 🎯 목표\n- Material-UI Skeleton 컴포넌트 사용\n- 각 페이지별 로딩 상태 디자인\n- 부드러운 전환 애니메이션\n\n## 📁 관련 파일\n- `frontend/src/components/WineList.tsx`\n- `frontend/src/components/WineDetail.tsx`\n- `frontend/src/components/skeletons/` (신규)\n\n## ✅ 완료 조건\n- [ ] WineList 스켈레톤\n- [ ] WineDetail 스켈레톤\n- [ ] WineForm 로딩 상태\n- [ ] 전환 애니메이션\n- [ ] 일관된 로딩 UX",
+    "labels": ["enhancement", "ui", "frontend"]
+  },
+  {
+    "title": "🎨 애니메이션 및 전환 효과 추가",
+    "body": "## 📋 설명\nUI에 부드러운 애니메이션과 전환 효과를 추가하여 사용자 경험을 향상시킵니다.\n\n## 🎯 목표\n- 페이지 전환 애니메이션\n- 리스트 아이템 애니메이션\n- 모달/다이얼로그 애니메이션\n- 마이크로 인터랙션\n\n## 📁 관련 파일\n- 모든 프론트엔드 컴포넌트\n\n## 💡 추천 라이브러리\n- Framer Motion\n- React Spring\n- Material-UI Transitions\n\n## ✅ 완료 조건\n- [ ] 페이지 전환 애니메이션\n- [ ] 리스트 아이템 Fade/Slide 효과\n- [ ] 버튼 호버 효과\n- [ ] 모달 애니메이션\n- [ ] 삭제 시 Exit 애니메이션\n- [ ] 성능 최적화 (GPU 가속)",
+    "labels": ["enhancement", "ui", "frontend"]
+  }
+]
