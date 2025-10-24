@@ -11,8 +11,8 @@ import App from './App.tsx'
 import wineTheme from './theme/wineTheme.ts'
 import './index.css'
 
-// PWA 서비스 워커 등록
-if ('serviceWorker' in navigator) {
+// PWA 서비스 워커 등록 (개발 환경에서 임시 비활성화)
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
