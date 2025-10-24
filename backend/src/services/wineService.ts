@@ -8,6 +8,7 @@ import {
   WineListResponse
 } from '../types/wine';
 import { NotFoundError, InternalServerError } from '../errors/HttpErrors';
+import { generateExternalLinks, normalizeUrl } from '../utils/externalLinksUtils';
 
 /**
  * 와인 서비스 클래스
@@ -128,9 +129,24 @@ export class WineService {
    */
   async createWine(wineData: CreateWineRequest): Promise<Wine> {
     try {
+      // 외부 링크 자동 생성
+      const externalLinks = generateExternalLinks(
+        wineData.name,
+        wineData.vintage,
+        wineData.vivino_url,
+        wineData.wine_searcher_url
+      );
+
+      // 데이터 정규화
+      const wineDataWithLinks = {
+        ...wineData,
+        vivino_url: normalizeUrl(externalLinks.vivino_url),
+        wine_searcher_url: normalizeUrl(externalLinks.wine_searcher_url)
+      };
+
       const { data, error } = await supabase
         .from('wines')
-        .insert([wineData])
+        .insert([wineDataWithLinks])
         .select()
         .single();
 
@@ -154,12 +170,37 @@ export class WineService {
    */
   async updateWine(id: string, wineData: UpdateWineRequest): Promise<Wine> {
     try {
+      // 기존 와인 정보 조회 (외부 링크 생성에 필요)
+      const existingWine = await this.getWineById(id);
+      
+      // 외부 링크 자동 생성 (이름이나 빈티지가 변경된 경우)
+      const shouldRegenerateLinks = wineData.name || wineData.vintage;
+      let externalLinks = {};
+      
+      if (shouldRegenerateLinks) {
+        const wineName = wineData.name || existingWine.name;
+        const vintage = wineData.vintage || existingWine.vintage;
+        
+        externalLinks = generateExternalLinks(
+          wineName,
+          vintage,
+          wineData.vivino_url,
+          wineData.wine_searcher_url
+        );
+      }
+
+      // 데이터 정규화
+      const updateData = {
+        ...wineData,
+        ...(shouldRegenerateLinks && externalLinks),
+        vivino_url: normalizeUrl(wineData.vivino_url || (externalLinks as any).vivino_url),
+        wine_searcher_url: normalizeUrl(wineData.wine_searcher_url || (externalLinks as any).wine_searcher_url),
+        updated_at: new Date().toISOString()
+      };
+
       const { data, error } = await supabase
         .from('wines')
-        .update({
-          ...wineData,
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('id', id)
         .select()
         .single();

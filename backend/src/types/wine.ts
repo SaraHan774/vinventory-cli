@@ -15,6 +15,8 @@ export interface Wine {
   vintage: number;
   price: number;
   quantity: number;
+  vivino_url?: string | null;
+  wine_searcher_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -28,6 +30,8 @@ export interface CreateWineRequest {
   vintage: number;
   price: number;
   quantity: number;
+  vivino_url?: string | null;
+  wine_searcher_url?: string | null;
 }
 
 /**
@@ -39,6 +43,8 @@ export interface UpdateWineRequest {
   vintage?: number;
   price?: number;
   quantity?: number;
+  vivino_url?: string | null;
+  wine_searcher_url?: string | null;
 }
 
 /**

@@ -11,6 +11,8 @@ export interface Wine {
   vintage: number;
   price: number;
   quantity: number;
+  vivino_url?: string | null;
+  wine_searcher_url?: string | null;
   created_at: string;     // 데이터베이스 컬럼명과 일치
   updated_at: string;     // 데이터베이스 컬럼명과 일치
 }
@@ -21,6 +23,8 @@ export interface CreateWineRequest {
   vintage: number;
   price: number;
   quantity: number;
+  vivino_url?: string | null;
+  wine_searcher_url?: string | null;
 }
 
 export interface UpdateWineRequest {
@@ -29,6 +33,8 @@ export interface UpdateWineRequest {
   vintage?: number;
   price?: number;
   quantity?: number;
+  vivino_url?: string | null;
+  wine_searcher_url?: string | null;
 }
 
 export interface UpdateWineQuantityRequest {

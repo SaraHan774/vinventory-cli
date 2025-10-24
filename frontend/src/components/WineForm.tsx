@@ -43,7 +43,9 @@ export default function WineForm() {
     country_code: '',  // 데이터베이스 컬럼명과 일치
     vintage: new Date().getFullYear(),
     price: 0,
-    quantity: 0
+    quantity: 0,
+    vivino_url: '',
+    wine_searcher_url: ''
     // description과 isActive 필드 제거 (DB에 없음)
   });
 
@@ -55,7 +57,9 @@ export default function WineForm() {
         country_code: existingWine.country_code,
         vintage: existingWine.vintage,
         price: existingWine.price,
-        quantity: existingWine.quantity
+        quantity: existingWine.quantity,
+        vivino_url: existingWine.vivino_url || '',
+        wine_searcher_url: existingWine.wine_searcher_url || ''
       });
     }
   }, [isEdit, existingWine]);
@@ -66,7 +70,13 @@ export default function WineForm() {
 
   // 폼 데이터 변경 핸들러
   const handleChange = (field: string) => (event: any) => {
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    let value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    
+    // 숫자 필드들은 숫자로 변환
+    if (['price', 'quantity', 'vintage'].includes(field)) {
+      value = value === '' ? 0 : Number(value);
+    }
+    
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -105,6 +115,23 @@ export default function WineForm() {
       newErrors.quantity = '수량은 0 이상이어야 합니다.';
     }
 
+    // URL 검증 (비어있지 않은 경우에만)
+    if (formData.vivino_url && formData.vivino_url.trim() !== '') {
+      try {
+        new URL(formData.vivino_url);
+      } catch {
+        newErrors.vivino_url = '올바른 URL 형식을 입력해주세요.';
+      }
+    }
+
+    if (formData.wine_searcher_url && formData.wine_searcher_url.trim() !== '') {
+      try {
+        new URL(formData.wine_searcher_url);
+      } catch {
+        newErrors.wine_searcher_url = '올바른 URL 형식을 입력해주세요.';
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -123,9 +150,11 @@ export default function WineForm() {
       const wineData = {
         name: formData.name,
         country_code: formData.country_code,
-        vintage: formData.vintage,
-        price: formData.price,
-        quantity: formData.quantity
+        vintage: Number(formData.vintage),
+        price: Number(formData.price),
+        quantity: Number(formData.quantity),
+        vivino_url: formData.vivino_url || null,
+        wine_searcher_url: formData.wine_searcher_url || null
       };
 
       if (isEdit && id) {
@@ -317,6 +346,53 @@ export default function WineForm() {
                 required
                 variant="outlined"
                 inputProps={{ min: 0 }}
+                sx={{ 
+                  '& .MuiInputLabel-root': {
+                    fontWeight: 600,
+                    color: 'text.primary'
+                  }
+                }}
+              />
+            </Grid>
+
+            {/* 외부 링크 섹션 */}
+            <Grid item xs={12}>
+              <Divider sx={{ my: 3 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ px: 2 }}>
+                  고급 옵션 (선택사항)
+                </Typography>
+              </Divider>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Vivino URL"
+                value={formData.vivino_url}
+                onChange={handleChange('vivino_url')}
+                error={Boolean(errors.vivino_url)}
+                helperText={errors.vivino_url || '비워두면 자동으로 검색 링크가 생성됩니다'}
+                variant="outlined"
+                placeholder="https://www.vivino.com/..."
+                sx={{ 
+                  '& .MuiInputLabel-root': {
+                    fontWeight: 600,
+                    color: 'text.primary'
+                  }
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Wine-Searcher URL"
+                value={formData.wine_searcher_url}
+                onChange={handleChange('wine_searcher_url')}
+                error={Boolean(errors.wine_searcher_url)}
+                helperText={errors.wine_searcher_url || '비워두면 자동으로 검색 링크가 생성됩니다'}
+                variant="outlined"
+                placeholder="https://www.wine-searcher.com/..."
                 sx={{ 
                   '& .MuiInputLabel-root': {
                     fontWeight: 600,

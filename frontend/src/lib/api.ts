@@ -65,32 +65,32 @@ export class WineApiService {
    * 모든 와인 조회
    */
   static async getAllWines(): Promise<Wine[]> {
-    const response: AxiosResponse<Wine[]> = await apiClient.get('/wines');
-    return response.data;
+    const response: AxiosResponse<{ success: boolean; data: { wines: Wine[] } }> = await apiClient.get('/wines');
+    return response.data.data.wines;
   }
 
   /**
    * 특정 와인 조회
    */
   static async getWineById(id: string): Promise<Wine> {
-    const response: AxiosResponse<Wine> = await apiClient.get(`/wines/${id}`);
-    return response.data;
+    const response: AxiosResponse<{ success: boolean; data: Wine }> = await apiClient.get(`/wines/${id}`);
+    return response.data.data;
   }
 
   /**
    * 와인 생성
    */
   static async createWine(wineData: CreateWineRequest): Promise<Wine> {
-    const response: AxiosResponse<Wine> = await apiClient.post('/wines', wineData);
-    return response.data;
+    const response: AxiosResponse<{ success: boolean; data: Wine }> = await apiClient.post('/wines', wineData);
+    return response.data.data;
   }
 
   /**
    * 와인 업데이트
    */
   static async updateWine(id: string, wineData: UpdateWineRequest): Promise<Wine> {
-    const response: AxiosResponse<Wine> = await apiClient.put(`/wines/${id}`, wineData);
-    return response.data;
+    const response: AxiosResponse<{ success: boolean; data: Wine }> = await apiClient.put(`/wines/${id}`, wineData);
+    return response.data.data;
   }
 
   /**
@@ -104,64 +104,64 @@ export class WineApiService {
    * 와인 수량 업데이트
    */
   static async updateWineQuantity(id: string, quantityData: UpdateWineQuantityRequest): Promise<Wine> {
-    const response: AxiosResponse<Wine> = await apiClient.put(`/wines/${id}/quantity`, quantityData);
-    return response.data;
+    const response: AxiosResponse<{ success: boolean; data: Wine }> = await apiClient.put(`/wines/${id}/quantity`, quantityData);
+    return response.data.data;
   }
 
   /**
    * 이름으로 와인 검색
    */
   static async searchWines(query: string): Promise<Wine[]> {
-    const response: AxiosResponse<Wine[]> = await apiClient.get('/wines/search', {
+    const response: AxiosResponse<{ success: boolean; data: Wine[] }> = await apiClient.get('/wines/search', {
       params: { query }
     });
-    return response.data;
+    return response.data.data;
   }
 
   /**
    * 빈티지 범위로 와인 필터링
    */
   static async filterByVintageRange(startYear: number, endYear: number): Promise<Wine[]> {
-    const response: AxiosResponse<Wine[]> = await apiClient.get('/wines/filter', {
+    const response: AxiosResponse<{ success: boolean; data: Wine[] }> = await apiClient.get('/wines/filter', {
       params: { 
         vintageStart: startYear, 
         vintageEnd: endYear 
       }
     });
-    return response.data;
+    return response.data.data;
   }
 
   /**
    * 가격 범위로 와인 필터링
    */
   static async filterByPriceRange(minPrice: number, maxPrice: number): Promise<Wine[]> {
-    const response: AxiosResponse<Wine[]> = await apiClient.get('/wines/filter', {
+    const response: AxiosResponse<{ success: boolean; data: Wine[] }> = await apiClient.get('/wines/filter', {
       params: { 
         minPrice, 
         maxPrice 
       }
     });
-    return response.data;
+    return response.data.data;
   }
 
   /**
    * 국가 코드로 와인 필터링
    */
   static async filterByCountry(countryCode: string): Promise<Wine[]> {
-    const response: AxiosResponse<Wine[]> = await apiClient.get('/wines/filter', {
+    const response: AxiosResponse<{ success: boolean; data: Wine[] }> = await apiClient.get('/wines/filter', {
       params: { country: countryCode }
     });
-    return response.data;
+    return response.data.data;
   }
 
   /**
    * 재고 부족 와인 조회
    */
   static async getLowStockWines(threshold: number = 5): Promise<Wine[]> {
-    const response: AxiosResponse<Wine[]> = await apiClient.get('/wines/low-stock', {
+    const response: AxiosResponse<{ success: boolean; data: Wine[] }> = await apiClient.get('/wines/low-stock', {
       params: { threshold }
     });
-    return response.data;
+    return response.data.data;
   }
 }
 

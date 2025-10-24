@@ -26,9 +26,12 @@ import {
   Edit as EditIcon, 
   Delete as DeleteIcon,
   Add as AddIcon,
-  Remove as RemoveIcon
+  Remove as RemoveIcon,
+  OpenInNew as OpenInNewIcon,
+  WineBar as WineBarIcon
 } from '@mui/icons-material';
 import { useSnackbar } from '../contexts/SnackbarContext';
+import WineNotesSection from './WineNotesSection';
 
 /**
  * 와인 상세 컴포넌트
@@ -49,7 +52,7 @@ export default function WineDetail() {
   const handleQuantityChange = async (delta: number) => {
     if (!wine) return;
     
-    const newQuantity = Math.max(0, wine.quantity + delta);
+    const newQuantity = Math.max(0, (wine.quantity || 0) + delta);
     
     try {
       // 실제 API 호출
@@ -199,7 +202,7 @@ export default function WineDetail() {
               wordBreak: 'break-word' // 긴 이름도 줄바꿈 허용
             }}
           >
-            🍷 {wine.name}
+            🍷 {wine.name || '알 수 없는 와인'}
           </Typography>
         </Box>
 
@@ -219,7 +222,7 @@ export default function WineDetail() {
                     와인 이름
                   </Typography>
                   <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                    {wine.name}
+                    {wine.name || '알 수 없는 와인'}
                   </Typography>
                 </Box>
               </Grid>
@@ -230,7 +233,7 @@ export default function WineDetail() {
                     국가
                   </Typography>
                   <Chip 
-                    label={wine.country_code} 
+                    label={wine.country_code || 'N/A'} 
                     color="primary" 
                     variant="outlined"
                     sx={{ fontWeight: 600, textTransform: 'uppercase' }}
@@ -244,7 +247,7 @@ export default function WineDetail() {
                     연도
                   </Typography>
                   <Chip 
-                    label={`${wine.vintage}년`} 
+                    label={`${wine.vintage || 'N/A'}년`} 
                     color="secondary" 
                     variant="outlined"
                     sx={{ fontWeight: 600 }}
@@ -258,7 +261,7 @@ export default function WineDetail() {
                     가격
                   </Typography>
                   <Typography variant="h6" color="primary" sx={{ fontWeight: 600 }}>
-                    ${wine.price.toFixed(2)}
+                    ${wine.price?.toFixed(2) || '0.00'}
                   </Typography>
                 </Box>
               </Grid>
@@ -289,7 +292,7 @@ export default function WineDetail() {
             {/* 감소 버튼 */}
             <IconButton
               onClick={() => handleQuantityChange(-1)}
-              disabled={wine.quantity <= 0}
+              disabled={(wine.quantity || 0) <= 0}
               sx={{ 
                 color: 'error.main',
                 border: 1,
@@ -315,12 +318,12 @@ export default function WineDetail() {
               </Typography>
               <Typography 
                 variant="h2" 
-                color={wine.quantity <= 5 ? 'error.main' : 'success.main'}
+                color={(wine.quantity || 0) <= 5 ? 'error.main' : 'success.main'}
                 sx={{ fontWeight: 700, mb: 1 }}
               >
-                {wine.quantity}개
+                {wine.quantity || 0}개
               </Typography>
-              {wine.quantity <= 5 && (
+              {(wine.quantity || 0) <= 5 && (
                 <Chip 
                   label="재고 부족" 
                   color="error" 
@@ -347,6 +350,74 @@ export default function WineDetail() {
               <AddIcon />
             </IconButton>
           </Box>
+        </Box>
+
+        {/* 외부 정보 링크 섹션 */}
+        {(wine.vivino_url || wine.wine_searcher_url) && (
+          <Box sx={{ 
+            backgroundColor: 'background.paper',
+            border: 1,
+            borderColor: 'divider',
+            borderRadius: 2,
+            p: 3,
+            mb: 4
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3, textAlign: 'center' }}>
+              외부 정보
+            </Typography>
+            
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'center',
+              gap: 2,
+              flexWrap: 'wrap'
+            }}>
+              {/* Vivino 링크 */}
+              {wine.vivino_url && (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<WineBarIcon />}
+                  endIcon={<OpenInNewIcon />}
+                  href={wine.vivino_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    minWidth: 180,
+                    textTransform: 'none',
+                    fontWeight: 500
+                  }}
+                >
+                  Vivino에서 보기
+                </Button>
+              )}
+
+              {/* Wine-Searcher 링크 */}
+              {wine.wine_searcher_url && (
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<WineBarIcon />}
+                  endIcon={<OpenInNewIcon />}
+                  href={wine.wine_searcher_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    minWidth: 180,
+                    textTransform: 'none',
+                    fontWeight: 500
+                  }}
+                >
+                  Wine-Searcher에서 보기
+                </Button>
+              )}
+            </Box>
+          </Box>
+        )}
+
+        {/* 와인 노트 섹션 */}
+        <Box sx={{ mt: 4 }}>
+          <WineNotesSection wineId={wine.id} />
         </Box>
       </Paper>
     </Box>
