@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 // 루트 프로젝트 빌드 설정
 // 멀티모듈 프로젝트의 공통 설정을 정의합니다.
 
@@ -17,9 +20,10 @@ subprojects {
     
     // JVM 툴체인 설정으로 호환성 문제 해결
     plugins.withType<org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper> {
-        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-            kotlinOptions {
-                jvmTarget = "17"
+        tasks.withType<KotlinCompile>().configureEach {
+            compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_17)
+                freeCompilerArgs.addAll("-Xjsr305=strict")
             }
         }
     }

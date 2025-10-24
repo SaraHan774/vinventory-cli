@@ -1,29 +1,34 @@
 package di
 
 import org.koin.dsl.module
-import com.august.service.inventory.InventoryService
+import com.august.service.inventory.ApiInventoryService
 import com.august.service.inventory.IInventoryService
-import com.august.repository.inventory.v2.SQLiteWineRepository
-import com.august.repository.inventory.v2.IWineRepository
+import com.august.api.WineApiClient
 import com.august.service.alert.ConsoleAlertService
 import com.august.service.alert.InventoryServiceErrorHandler
-import com.august.repository.db.DatabaseFactory
+import io.github.cdimascio.dotenv.dotenv
 
 val appModule = module {
-    // Initialize database first
-    single(createdAtStart = true) { 
-        DatabaseFactory.init()
-        Unit  // Return Unit since we don't need the result
+    // 환경 변수 설정
+    single { 
+        dotenv {
+            ignoreIfMissing = true
+        }
+    }
+    
+    // API 클라이언트 설정
+    single {
+        val dotenv = get<io.github.cdimascio.dotenv.Dotenv>()
+        val baseUrl = dotenv["API_BASE_URL"] 
+            ?: System.getenv("API_BASE_URL") 
+            ?: "http://localhost:8590"
+        WineApiClient(baseUrl = baseUrl)
     }
 
-    // Repositories - depend on database initialization
-    single<IWineRepository> {
-        get<Unit>() // This ensures database is initialized first
-        SQLiteWineRepository()
-    }
-
-    // Services
-    single<IInventoryService> { InventoryService(get()) }
+    // API 기반 서비스
+    single<IInventoryService> { ApiInventoryService(get()) }
+    
+    // 알림 서비스
     single { ConsoleAlertService() }
     single { InventoryServiceErrorHandler() }
 } 

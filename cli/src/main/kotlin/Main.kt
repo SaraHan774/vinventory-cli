@@ -10,6 +10,7 @@ import di.appModule
 import org.koin.core.context.startKoin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlinx.coroutines.runBlocking
 
 class Application : KoinComponent {
     private val inventoryService: IInventoryService by inject()
@@ -58,52 +59,54 @@ class Application : KoinComponent {
         // Process any view events
         for (event in InputView.viewEvents) {
             try {
-                when (event) {
-                    is ViewEvent.RegisterWine -> {
-                        inventoryService.registerWine(
-                            name = event.name,
-                            countryCode = event.countryCode,
-                            vintage = event.vintage,
-                            price = event.price,
-                            quantity = event.quantity
-                        )
-                        println("Wine registered successfully")
-                    }
-                    is ViewEvent.DeleteWine -> {
-                        inventoryService.deleteWine(event.id)
-                        println("Wine deleted successfully")
-                    }
-                    is ViewEvent.AddWine -> {
-                        inventoryService.addWine(event.id, event.quantity)
-                        println("Wine quantity updated successfully")
-                    }
-                    is ViewEvent.RetrieveWine -> {
-                        val wine = inventoryService.retrieveWine(event.id)
-                        println("Retrieved wine: $wine")
-                    }
-                    is ViewEvent.SearchWinesByName -> {
-                        val wines = inventoryService.searchWinesByName(event.query)
-                        printWines("Search results:", wines)
-                    }
-                    is ViewEvent.FilterByVintage -> {
-                        val wines = inventoryService.findWinesByVintageRange(event.startYear, event.endYear)
-                        printWines("Wines from ${event.startYear} to ${event.endYear}:", wines)
-                    }
-                    is ViewEvent.FilterByPrice -> {
-                        val wines = inventoryService.findWinesByPriceRange(event.minPrice, event.maxPrice)
-                        printWines("Wines between $${event.minPrice} and $${event.maxPrice}:", wines)
-                    }
-                    is ViewEvent.FilterByCountry -> {
-                        val wines = inventoryService.findWinesByCountry(event.countryCode)
-                        printWines("Wines from ${event.countryCode}:", wines)
-                    }
-                    is ViewEvent.ShowLowStockWines -> {
-                        val wines = inventoryService.findLowStockWines()
-                        printWines("Low stock wines:", wines)
-                    }
-                    is ViewEvent.ListAllWines -> {
-                        val wines = inventoryService.getAllWines()
-                        printWines("All wines:", wines)
+                runBlocking {
+                    when (event) {
+                        is ViewEvent.RegisterWine -> {
+                            inventoryService.registerWine(
+                                name = event.name,
+                                countryCode = event.countryCode,
+                                vintage = event.vintage,
+                                price = event.price,
+                                quantity = event.quantity
+                            )
+                            println("Wine registered successfully")
+                        }
+                        is ViewEvent.DeleteWine -> {
+                            inventoryService.deleteWine(event.id)
+                            println("Wine deleted successfully")
+                        }
+                        is ViewEvent.AddWine -> {
+                            inventoryService.addWine(event.id, event.quantity)
+                            println("Wine quantity updated successfully")
+                        }
+                        is ViewEvent.RetrieveWine -> {
+                            val wine = inventoryService.retrieveWine(event.id)
+                            println("Retrieved wine: $wine")
+                        }
+                        is ViewEvent.SearchWinesByName -> {
+                            val wines = inventoryService.searchWinesByName(event.query)
+                            printWines("Search results:", wines)
+                        }
+                        is ViewEvent.FilterByVintage -> {
+                            val wines = inventoryService.findWinesByVintageRange(event.startYear, event.endYear)
+                            printWines("Wines from ${event.startYear} to ${event.endYear}:", wines)
+                        }
+                        is ViewEvent.FilterByPrice -> {
+                            val wines = inventoryService.findWinesByPriceRange(event.minPrice, event.maxPrice)
+                            printWines("Wines between $${event.minPrice} and $${event.maxPrice}:", wines)
+                        }
+                        is ViewEvent.FilterByCountry -> {
+                            val wines = inventoryService.findWinesByCountry(event.countryCode)
+                            printWines("Wines from ${event.countryCode}:", wines)
+                        }
+                        is ViewEvent.ShowLowStockWines -> {
+                            val wines = inventoryService.findLowStockWines()
+                            printWines("Low stock wines:", wines)
+                        }
+                        is ViewEvent.ListAllWines -> {
+                            val wines = inventoryService.getAllWines()
+                            printWines("All wines:", wines)
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -126,7 +129,7 @@ class Application : KoinComponent {
             println("""
                 ID: ${wine.id}
                 Name: ${wine.name}
-                Country: ${wine.countryCode}
+                Country: ${wine.country_code}
                 Vintage: ${wine.vintage}
                 Price: $${wine.price}
                 Quantity: ${wine.quantity}

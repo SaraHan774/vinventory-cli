@@ -1,4 +1,4 @@
-package repository.inventory
+package com.august.repository.inventory.v1
 
 import com.august.domain.model.v1.Wine
 import com.august.repository.inventory.v1.InventoryFilterType.*

@@ -1,12 +1,13 @@
 import { supabase } from '../config/supabase';
-import { 
-  Wine, 
-  CreateWineRequest, 
-  UpdateWineRequest, 
-  WineSearchFilter, 
+import {
+  Wine,
+  CreateWineRequest,
+  UpdateWineRequest,
+  WineSearchFilter,
   WineSortOptions,
-  WineListResponse 
+  WineListResponse
 } from '../types/wine';
+import { NotFoundError, InternalServerError } from '../errors/HttpErrors';
 
 /**
  * 와인 서비스 클래스
@@ -70,7 +71,7 @@ export class WineService {
       const { data, error, count } = await query;
 
       if (error) {
-        throw new Error(`데이터베이스 조회 실패: ${error.message}`);
+        throw new InternalServerError(`데이터베이스 조회 실패: ${error.message}`);
       }
 
       const total = count || 0;
@@ -107,9 +108,9 @@ export class WineService {
 
       if (error) {
         if (error.code === 'PGRST116') {
-          throw new Error('와인을 찾을 수 없습니다.');
+          throw new NotFoundError('와인을 찾을 수 없습니다.');
         }
-        throw new Error(`데이터베이스 조회 실패: ${error.message}`);
+        throw new InternalServerError(`데이터베이스 조회 실패: ${error.message}`);
       }
 
       return data;
@@ -134,7 +135,7 @@ export class WineService {
         .single();
 
       if (error) {
-        throw new Error(`와인 생성 실패: ${error.message}`);
+        throw new InternalServerError(`와인 생성 실패: ${error.message}`);
       }
 
       return data;
@@ -165,9 +166,9 @@ export class WineService {
 
       if (error) {
         if (error.code === 'PGRST116') {
-          throw new Error('와인을 찾을 수 없습니다.');
+          throw new NotFoundError('와인을 찾을 수 없습니다.');
         }
-        throw new Error(`와인 업데이트 실패: ${error.message}`);
+        throw new InternalServerError(`와인 업데이트 실패: ${error.message}`);
       }
 
       return data;
@@ -191,7 +192,7 @@ export class WineService {
         .eq('id', id);
 
       if (error) {
-        throw new Error(`와인 삭제 실패: ${error.message}`);
+        throw new InternalServerError(`와인 삭제 실패: ${error.message}`);
       }
 
       return true;
@@ -216,7 +217,7 @@ export class WineService {
         .order('quantity', { ascending: true });
 
       if (error) {
-        throw new Error(`저재고 와인 조회 실패: ${error.message}`);
+        throw new InternalServerError(`저재고 와인 조회 실패: ${error.message}`);
       }
 
       return data || [];

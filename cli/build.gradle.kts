@@ -3,6 +3,7 @@
 
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization")
     application
 }
 
@@ -23,16 +24,23 @@ dependencies {
     // 의존성 주입
     implementation("io.insert-koin:koin-core:3.5.3")
     
-    // 데이터베이스
-    implementation("org.jetbrains.exposed:exposed-core:0.48.0")
-    implementation("org.jetbrains.exposed:exposed-dao:0.48.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.48.0")
-    implementation("org.jetbrains.exposed:exposed-java-time:0.48.0")
-    implementation("org.xerial:sqlite-jdbc:3.45.1.0")
+    // HTTP 클라이언트 (Backend API 통신)
+    implementation("io.ktor:ktor-client-core:3.0.3")
+    implementation("io.ktor:ktor-client-cio:3.0.3")
+    implementation("io.ktor:ktor-client-content-negotiation:3.0.3")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.3")
+    implementation("io.ktor:ktor-client-logging:3.0.3")
+    
+    // JSON 직렬화
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    
+    // 환경 변수 관리
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
     
     // 로깅
     implementation("org.slf4j:slf4j-api:2.0.12")
     implementation("ch.qos.logback:logback-classic:1.4.14")
+    
     
     // 테스트
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")

@@ -1,4 +1,4 @@
-package service.alert
+package com.august.service.alert
 
 import com.august.service.alert.AlertService
 import org.junit.jupiter.api.BeforeEach

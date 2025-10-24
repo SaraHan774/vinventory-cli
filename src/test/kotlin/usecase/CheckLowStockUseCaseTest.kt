@@ -1,4 +1,4 @@
-package usecase
+package com.august.usecase
 
 import com.august.domain.model.v1.Wine
 import com.august.repository.inventory.v1.InventoryRepository

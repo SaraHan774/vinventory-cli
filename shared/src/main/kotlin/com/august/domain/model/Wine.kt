@@ -13,6 +13,8 @@ import kotlinx.serialization.Serializable
  * @property vintage 빈티지 연도
  * @property price 가격 (달러)
  * @property quantity 재고 수량
+ * @property createdAt 생성 시간
+ * @property updatedAt 수정 시간
  */
 @Serializable
 data class Wine(
@@ -21,6 +23,8 @@ data class Wine(
     val countryCode: String,
     val vintage: Int,
     val price: Double,
-    val quantity: Int
+    val quantity: Int,
+    val createdAt: String? = null,
+    val updatedAt: String? = null
 )
 

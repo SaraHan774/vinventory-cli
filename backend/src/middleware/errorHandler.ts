@@ -1,18 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
 import { ErrorResponse } from '../types/wine';
+import { HttpError } from '../errors/HttpErrors';
 
 /**
  * 글로벌 에러 핸들러 미들웨어
- * 
+ *
  * 애플리케이션에서 발생하는 모든 에러를 일관된 형태로 처리합니다.
+ * HttpError 인스턴스는 상태 코드와 에러 코드를 포함하여 처리됩니다.
  */
 export function errorHandler(
-  error: Error,
+  error: Error | HttpError,
   req: Request,
   res: Response,
   next: NextFunction
 ): void {
   console.error('🚨 글로벌 에러 발생:', {
+    name: error.name,
     message: error.message,
     stack: error.stack,
     url: req.url,
@@ -25,19 +28,40 @@ export function errorHandler(
     return next(error);
   }
 
-  // 기본 에러 응답
-  const errorResponse: ErrorResponse = {
-    success: false,
-    error: 'INTERNAL_ERROR',
-    message: '서버 내부 오류가 발생했습니다.'
-  };
+  // HttpError 인스턴스인 경우
+  if (error instanceof HttpError) {
+    const errorResponse: ErrorResponse = {
+      success: false,
+      error: error.errorCode || 'HTTP_ERROR',
+      message: error.message
+    };
 
-  // 개발 환경에서는 상세한 에러 정보 포함
-  if (process.env.NODE_ENV === 'development') {
-    errorResponse.message = error.message;
+    res.status(error.statusCode).json(errorResponse);
+    return;
   }
 
-  res.status(500).json(errorResponse);
+  // 일반 Error 객체지만 메시지로 타입 추론
+  // (주로 테스트나 레거시 코드 호환성을 위함)
+  let status = 500;
+  let errorCode = 'INTERNAL_ERROR';
+
+  if (error.message.includes('찾을 수 없습니다') || error.message.includes('not found')) {
+    status = 404;
+    errorCode = 'NOT_FOUND';
+  } else if (error.message.includes('검증') || error.message.includes('validation')) {
+    status = 400;
+    errorCode = 'VALIDATION_ERROR';
+  }
+
+  const errorResponse: ErrorResponse = {
+    success: false,
+    error: errorCode,
+    message: (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test' || status !== 500)
+      ? error.message
+      : '서버 내부 오류가 발생했습니다.'
+  };
+
+  res.status(status).json(errorResponse);
 }
 
 /**
