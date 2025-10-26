@@ -17,6 +17,35 @@ export class WineNoteController {
   }
 
   /**
+   * 모든 노트 조회 (전체 노트 목록)
+   */
+  async getAllNotes(req: Request, res: Response): Promise<void> {
+    try {
+      const { title, color, is_pinned, created_after, created_before } = req.query;
+      const { sort_field = 'created_at', sort_order = 'desc' } = req.query;
+
+      const filter = {
+        title: title as string,
+        color: color as string,
+        is_pinned: is_pinned === 'true' ? true : is_pinned === 'false' ? false : undefined,
+        created_after: created_after as string,
+        created_before: created_before as string,
+      };
+
+      const sort = {
+        field: sort_field as any,
+        order: sort_order as 'asc' | 'desc',
+      };
+
+      const result = await this.wineNoteService.getAllNotes(filter, sort);
+      sendSuccess(res, result, '전체 노트 목록을 조회했습니다.');
+    } catch (error) {
+      console.error('전체 노트 조회 오류:', error);
+      sendError(res, 500, 'NOTES_FETCH_ERROR', '전체 노트 조회에 실패했습니다.');
+    }
+  }
+
+  /**
    * 특정 와인의 모든 노트 조회
    */
   async getWineNotes(req: Request, res: Response): Promise<void> {

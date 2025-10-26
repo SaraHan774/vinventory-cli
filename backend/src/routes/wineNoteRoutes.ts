@@ -17,6 +17,13 @@ const router = Router();
 const wineNoteController = new WineNoteController();
 
 /**
+ * @route GET /api/v1/notes
+ * @desc 모든 노트 조회 (전체 노트 목록)
+ * @access Public
+ */
+router.get('/', wineNoteController.getAllNotes.bind(wineNoteController));
+
+/**
  * @route GET /api/v1/wines/:wineId/notes
  * @desc 특정 와인의 모든 노트 조회
  * @access Public

@@ -92,6 +92,7 @@ app.get('/api', (_req, res) => {
 // API 라우트 설정
 app.use('/api/v1/wines', wineRoutes);
 app.use('/api/v1/wines', wineNoteRoutes);
+app.use('/api/v1/notes', wineNoteRoutes); // 전체 노트 라우트 추가
 
 // 404 핸들러 (Context7 권장 순서)
 app.use(notFoundHandler);

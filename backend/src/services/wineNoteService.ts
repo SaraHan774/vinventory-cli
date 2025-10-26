@@ -18,6 +18,59 @@ import { NotFoundError, InternalServerError } from '../errors/HttpErrors';
 export class WineNoteService {
   
   /**
+   * 모든 노트 조회 (전체 노트 목록)
+   * 
+   * @param filter 검색 필터
+   * @param sort 정렬 옵션
+   * @returns 모든 와인 노트 목록
+   */
+  async getAllNotes(
+    filter: WineNoteSearchFilter = {},
+    sort: WineNoteSortOptions = { field: 'created_at', order: 'desc' }
+  ): Promise<WineNoteListResponse> {
+    try {
+      let query = supabase
+        .from('wine_notes')
+        .select(`
+          *,
+          wines!inner(id, name, vintage, country_code)
+        `);
+
+      // 필터링 적용
+      if (filter.title) {
+        query = query.ilike('title', `%${filter.title}%`);
+      }
+      if (filter.color) {
+        query = query.eq('color', filter.color);
+      }
+      if (filter.is_pinned !== undefined) {
+        query = query.eq('is_pinned', filter.is_pinned);
+      }
+      if (filter.created_after) {
+        query = query.gte('created_at', filter.created_after);
+      }
+      if (filter.created_before) {
+        query = query.lte('created_at', filter.created_before);
+      }
+
+      // 정렬 적용
+      const { data, error } = await query.order(sort.field, { ascending: sort.order === 'asc' });
+
+      if (error) {
+        throw new InternalServerError(`전체 노트 조회 실패: ${error.message}`);
+      }
+
+      return {
+        notes: data || [],
+        total: data?.length || 0
+      };
+    } catch (error) {
+      console.error('전체 노트 조회 오류:', error);
+      throw error;
+    }
+  }
+
+  /**
    * 특정 와인의 모든 노트 조회
    * 
    * @param wineId 와인 ID
