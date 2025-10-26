@@ -15,4 +15,5 @@ rootProject.name = "vinventory"
 include("shared")     // 공통 도메인 모델
 include("backend")    // TypeScript Express API 서버
 include("frontend")   // React + Vite 앱 (빌드 설정만 포함)
+include("mobile")     // React Native 모바일 앱
 include("cli")        // 기존 CLI 앱
